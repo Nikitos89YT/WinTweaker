@@ -1,0 +1,674 @@
+﻿<Page x:Class="WinTweaker.Pages.SettingsPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Background="#0F0F12">
+
+    <Page.Resources>
+
+        <!-- ===================================================== -->
+        <!-- BUTTON -->
+        <!-- ===================================================== -->
+
+        <Style TargetType="Button">
+
+            <Setter Property="Background"
+                    Value="#25252C"/>
+
+            <Setter Property="Foreground"
+                    Value="White"/>
+
+            <Setter Property="BorderBrush"
+                    Value="#383842"/>
+
+            <Setter Property="BorderThickness"
+                    Value="1"/>
+
+            <Setter Property="FontSize"
+                    Value="13"/>
+
+            <Setter Property="Cursor"
+                    Value="Hand"/>
+
+            <Style.Triggers>
+
+                <Trigger Property="IsMouseOver"
+                         Value="True">
+
+                    <Setter Property="Background"
+                            Value="#303039"/>
+
+                    <Setter Property="BorderBrush"
+                            Value="#4A4A56"/>
+
+                </Trigger>
+
+                <Trigger Property="IsPressed"
+                         Value="True">
+
+                    <Setter Property="Background"
+                            Value="#3A3A46"/>
+
+                </Trigger>
+
+            </Style.Triggers>
+
+        </Style>
+
+
+        <!-- ===================================================== -->
+        <!-- CHECKBOX -->
+        <!-- ===================================================== -->
+
+        <Style TargetType="CheckBox">
+
+            <Setter Property="Foreground"
+                    Value="White"/>
+
+            <Setter Property="FontSize"
+                    Value="14"/>
+
+            <Setter Property="Margin"
+                    Value="0,0,0,14"/>
+
+        </Style>
+
+
+        <!-- ===================================================== -->
+        <!-- COMBOBOX ITEM -->
+        <!-- ===================================================== -->
+
+        <Style TargetType="ComboBoxItem">
+
+            <Setter Property="Foreground"
+                    Value="White"/>
+
+            <Setter Property="Background"
+                    Value="#25252C"/>
+
+            <Setter Property="Padding"
+                    Value="10,8"/>
+
+            <Setter Property="FontSize"
+                    Value="14"/>
+
+            <Style.Triggers>
+
+                <Trigger Property="IsHighlighted"
+                         Value="True">
+
+                    <Setter Property="Background"
+                            Value="#34343D"/>
+
+                    <Setter Property="Foreground"
+                            Value="White"/>
+
+                </Trigger>
+
+                <Trigger Property="IsSelected"
+                         Value="True">
+
+                    <Setter Property="Background"
+                            Value="#3A3A46"/>
+
+                    <Setter Property="Foreground"
+                            Value="White"/>
+
+                </Trigger>
+
+            </Style.Triggers>
+
+        </Style>
+
+
+        <!-- ===================================================== -->
+        <!-- COMBOBOX -->
+        <!-- ===================================================== -->
+
+        <Style TargetType="ComboBox">
+
+            <Setter Property="Foreground"
+                    Value="White"/>
+
+            <Setter Property="Background"
+                    Value="#25252C"/>
+
+            <Setter Property="BorderBrush"
+                    Value="#383842"/>
+
+            <Setter Property="BorderThickness"
+                    Value="1"/>
+
+            <Setter Property="Height"
+                    Value="42"/>
+
+            <Setter Property="FontSize"
+                    Value="14"/>
+
+            <Setter Property="HorizontalContentAlignment"
+                    Value="Left"/>
+
+            <Setter Property="VerticalContentAlignment"
+                    Value="Center"/>
+
+            <Setter Property="Template">
+
+                <Setter.Value>
+
+                    <ControlTemplate TargetType="ComboBox">
+
+                        <Grid>
+
+                            <!-- ЗАКРЫТАЯ СТРОКА -->
+
+                            <Border
+                                x:Name="MainBorder"
+                                Background="#25252C"
+                                BorderBrush="#383842"
+                                BorderThickness="1"
+                                CornerRadius="6">
+
+                                <Grid>
+
+                                    <Grid.ColumnDefinitions>
+
+                                        <ColumnDefinition Width="*"/>
+
+                                        <ColumnDefinition Width="40"/>
+
+                                    </Grid.ColumnDefinitions>
+
+
+                                    <ContentPresenter
+                                        Grid.Column="0"
+                                        Margin="10,0,5,0"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Left"
+                                        Content="{TemplateBinding SelectionBoxItem}"
+                                        ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                        TextElement.Foreground="White"/>
+
+
+                                    <Path
+                                        Grid.Column="1"
+                                        Width="11"
+                                        Height="7"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Data="M 0 0 L 5.5 5.5 L 11 0"
+                                        Stroke="#D8D8DE"
+                                        StrokeThickness="1.5"
+                                        Fill="Transparent"/>
+
+
+                                    <ToggleButton
+                                        Grid.Column="0"
+                                        Grid.ColumnSpan="2"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        Focusable="False"
+                                        IsChecked="{Binding IsDropDownOpen,
+                                                    RelativeSource={RelativeSource TemplatedParent},
+                                                    Mode=TwoWay}"/>
+
+                                </Grid>
+
+                            </Border>
+
+
+                            <!-- ВЫПАДАЮЩИЙ СПИСОК -->
+
+                            <Popup
+                                x:Name="PART_Popup"
+                                Placement="Bottom"
+                                PlacementTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}"
+                                IsOpen="{TemplateBinding IsDropDownOpen}"
+                                AllowsTransparency="True"
+                                Focusable="False"
+                                PopupAnimation="Fade">
+
+                                <Border
+                                    Background="#25252C"
+                                    BorderBrush="#383842"
+                                    BorderThickness="1"
+                                    CornerRadius="6"
+                                    Margin="0,4,0,0"
+                                    MinWidth="{Binding ActualWidth,
+                                    RelativeSource={RelativeSource TemplatedParent}}">
+
+                                    <ScrollViewer
+                                        MaxHeight="280"
+                                        VerticalScrollBarVisibility="Auto"
+                                        HorizontalScrollBarVisibility="Disabled">
+
+                                        <ItemsPresenter/>
+
+                                    </ScrollViewer>
+
+                                </Border>
+
+                            </Popup>
+
+                        </Grid>
+
+
+                        <ControlTemplate.Triggers>
+
+                            <Trigger Property="IsMouseOver"
+                                     Value="True">
+
+                                <Setter
+                                    TargetName="MainBorder"
+                                    Property="BorderBrush"
+                                    Value="#4A4A56"/>
+
+                            </Trigger>
+
+                            <Trigger Property="IsDropDownOpen"
+                                     Value="True">
+
+                                <Setter
+                                    TargetName="MainBorder"
+                                    Property="BorderBrush"
+                                    Value="#5A5A68"/>
+
+                            </Trigger>
+
+                        </ControlTemplate.Triggers>
+
+                    </ControlTemplate>
+
+                </Setter.Value>
+
+            </Setter>
+
+        </Style>
+
+    </Page.Resources>
+
+
+    <!-- ========================================================= -->
+    <!-- CONTENT -->
+    <!-- ========================================================= -->
+
+    <ScrollViewer
+        VerticalScrollBarVisibility="Auto"
+        HorizontalScrollBarVisibility="Disabled">
+
+        <StackPanel Margin="30">
+
+
+            <!-- ================================================= -->
+            <!-- HEADER -->
+            <!-- ================================================= -->
+
+            <StackPanel Margin="0,0,0,25">
+
+                <TextBlock
+                    Text="Настройки"
+                    FontSize="30"
+                    FontWeight="Bold"
+                    Foreground="White"/>
+
+                <TextBlock
+                    Text="Настройка поведения и интерфейса WinTweaker."
+                    FontSize="14"
+                    Foreground="#888890"
+                    Margin="0,6,0,0"/>
+
+            </StackPanel>
+
+
+            <!-- ================================================= -->
+            <!-- INTERFACE -->
+            <!-- ================================================= -->
+
+            <Border
+                Background="#18181D"
+                CornerRadius="14"
+                Padding="22"
+                Margin="0,0,0,18">
+
+                <StackPanel>
+
+                    <TextBlock
+                        Text="🎨 Интерфейс"
+                        FontSize="20"
+                        FontWeight="SemiBold"
+                        Foreground="White"/>
+
+                    <TextBlock
+                        Text="Внешний вид приложения."
+                        FontSize="13"
+                        Foreground="#9999A3"
+                        Margin="0,7,0,20"/>
+
+
+                    <CheckBox
+                        x:Name="DarkThemeCheckBox"
+                        Content="Тёмная тема"/>
+
+
+                    <TextBlock
+                        Text="Акцентный цвет"
+                        FontSize="13"
+                        Foreground="#AAAAAF"
+                        Margin="0,0,0,7"/>
+
+
+                    <ComboBox
+                        x:Name="AccentColorComboBox"
+                        SelectedValuePath="Tag"
+                        Margin="0,0,0,0"
+                        SelectionChanged="AccentColorComboBox_SelectionChanged">
+
+                        <ComboBoxItem
+                            Content="🔵  Синий"
+                            Tag="Blue"/>
+
+                        <ComboBoxItem
+                            Content="🟣  Фиолетовый"
+                            Tag="Purple"/>
+
+                        <ComboBoxItem
+                            Content="🟢  Зелёный"
+                            Tag="Green"/>
+
+                        <ComboBoxItem
+                            Content="🟠  Оранжевый"
+                            Tag="Orange"/>
+
+                        <ComboBoxItem
+                            Content="🔴  Красный"
+                            Tag="Red"/>
+
+                    </ComboBox>
+
+                </StackPanel>
+
+            </Border>
+
+
+            <!-- ================================================= -->
+            <!-- BEHAVIOR -->
+            <!-- ================================================= -->
+
+            <Border
+                Background="#18181D"
+                CornerRadius="14"
+                Padding="22"
+                Margin="0,0,0,18">
+
+                <StackPanel>
+
+                    <TextBlock
+                        Text="⚙️ Поведение"
+                        FontSize="20"
+                        FontWeight="SemiBold"
+                        Foreground="White"/>
+
+                    <TextBlock
+                        Text="Как WinTweaker должен выполнять действия."
+                        FontSize="13"
+                        Foreground="#9999A3"
+                        Margin="0,7,0,20"/>
+
+
+                    <CheckBox
+                        x:Name="ConfirmDangerousActionsCheckBox"
+                        Content="Показывать подтверждение перед потенциально опасными действиями"/>
+
+
+                    <CheckBox
+                        x:Name="RunAsAdministratorCheckBox"
+                        Content="Запускать WinTweaker от имени администратора"/>
+
+
+                    <CheckBox
+                        x:Name="ShowNotificationsCheckBox"
+                        Content="Показывать уведомления"/>
+
+                </StackPanel>
+
+            </Border>
+
+
+            <!-- ================================================= -->
+            <!-- STARTUP -->
+            <!-- ================================================= -->
+
+            <Border
+                Background="#18181D"
+                CornerRadius="14"
+                Padding="22"
+                Margin="0,0,0,18">
+
+                <StackPanel>
+
+                    <TextBlock
+                        Text="🚀 Автозагрузка"
+                        FontSize="20"
+                        FontWeight="SemiBold"
+                        Foreground="White"/>
+
+                    <TextBlock
+                        Text="Настройки отображения страницы автозагрузки."
+                        FontSize="13"
+                        Foreground="#9999A3"
+                        Margin="0,7,0,20"/>
+
+
+                    <CheckBox
+                        x:Name="SaveStartupColumnsCheckBox"
+                        Content="Сохранять ширину колонок"/>
+
+
+                    <CheckBox
+                        x:Name="SaveStartupColumnOrderCheckBox"
+                        Content="Сохранять порядок колонок"/>
+
+
+                    <CheckBox
+                        x:Name="ShowSystemStartupItemsCheckBox"
+                        Content="Показывать системные записи"/>
+
+                </StackPanel>
+
+            </Border>
+
+
+            <!-- ================================================= -->
+            <!-- SECURITY -->
+            <!-- ================================================= -->
+
+            <Border
+                Background="#18181D"
+                CornerRadius="14"
+                Padding="22"
+                Margin="0,0,0,18">
+
+                <StackPanel>
+
+                    <TextBlock
+                        Text="🛡 Безопасность"
+                        FontSize="20"
+                        FontWeight="SemiBold"
+                        Foreground="White"/>
+
+                    <TextBlock
+                        Text="Дополнительная защита перед изменениями системы."
+                        FontSize="13"
+                        Foreground="#9999A3"
+                        Margin="0,7,0,20"/>
+
+
+                    <CheckBox
+                        x:Name="CreateRestorePointCheckBox"
+                        Content="Создавать точку восстановления перед изменениями"/>
+
+
+                    <CheckBox
+                        x:Name="BackupBeforeChangesCheckBox"
+                        Content="Создавать резервную копию перед изменениями"/>
+
+
+                    <Border
+                        Background="#121216"
+                        BorderBrush="#383842"
+                        BorderThickness="1"
+                        CornerRadius="8"
+                        Padding="12"
+                        Margin="0,5,0,0">
+
+                        <TextBlock
+                            Text="⚠️ Эти параметры подготавливают защиту для системных операций. Конкретные функции подключают её при выполнении изменений."
+                            FontSize="12"
+                            Foreground="#888890"
+                            TextWrapping="Wrap"/>
+
+                    </Border>
+
+                </StackPanel>
+
+            </Border>
+
+
+            <!-- ================================================= -->
+            <!-- ABOUT -->
+            <!-- ================================================= -->
+
+            <Border
+                Background="#18181D"
+                CornerRadius="14"
+                Padding="22"
+                Margin="0,0,0,18">
+
+                <StackPanel>
+
+                    <TextBlock
+                        Text="ℹ️ О программе"
+                        FontSize="20"
+                        FontWeight="SemiBold"
+                        Foreground="White"/>
+
+
+                    <TextBlock
+                        Text="WinTweaker"
+                        FontSize="18"
+                        FontWeight="SemiBold"
+                        Foreground="White"
+                        Margin="0,16,0,3"/>
+
+
+                    <TextBlock
+                        Text="Windows Utility"
+                        FontSize="13"
+                        Foreground="#888890"/>
+
+
+                    <TextBlock
+                        Text="Версия 1.0.0"
+                        FontSize="13"
+                        Foreground="#888890"
+                        Margin="0,3,0,18"/>
+
+
+                    <!-- AUTHORS -->
+
+                    <Border
+                        Background="#121216"
+                        BorderBrush="#383842"
+                        BorderThickness="1"
+                        CornerRadius="10"
+                        Padding="15"
+                        Margin="0,0,0,15">
+
+                        <StackPanel>
+
+                            <TextBlock
+                                Text="Разработчики"
+                                FontSize="14"
+                                FontWeight="SemiBold"
+                                Foreground="White"
+                                Margin="0,0,0,10"/>
+
+
+                            <TextBlock
+                                Text="Автор-кодер: Fifiv"
+                                FontSize="13"
+                                Foreground="#D8D8DE"
+                                Margin="0,0,0,5"/>
+
+
+                            <TextBlock
+                                Text="Соавтор: Moment1k"
+                                FontSize="13"
+                                Foreground="#D8D8DE"/>
+
+                        </StackPanel>
+
+                    </Border>
+
+
+                    <!-- COPYRIGHT -->
+
+                    <Border
+                        Background="#121216"
+                        BorderBrush="#383842"
+                        BorderThickness="1"
+                        CornerRadius="10"
+                        Padding="15"
+                        Margin="0,0,0,15">
+
+                        <TextBlock
+                            Text="© Авторские права на WinTweaker принадлежат Fifiv."
+                            FontSize="13"
+                            Foreground="#B8B8C0"
+                            TextWrapping="Wrap"/>
+
+                    </Border>
+
+
+                    <Button
+                        Content="📂 Открыть файл настроек"
+                        Width="190"
+                        Height="40"
+                        HorizontalAlignment="Left"
+                        Click="OpenSettingsFileButton_Click"/>
+
+                </StackPanel>
+
+            </Border>
+
+
+            <!-- ================================================= -->
+            <!-- ACTIONS -->
+            <!-- ================================================= -->
+
+            <StackPanel
+                Orientation="Horizontal"
+                HorizontalAlignment="Right"
+                Margin="0,0,0,25">
+
+                <Button
+                    x:Name="ResetSettingsButton"
+                    Content="Сбросить"
+                    Width="130"
+                    Height="42"
+                    Margin="0,0,10,0"
+                    Click="ResetSettingsButton_Click"/>
+
+
+                <Button
+                    x:Name="SaveSettingsButton"
+                    Content="Сохранить настройки"
+                    Width="190"
+                    Height="42"
+                    Click="SaveSettingsButton_Click"/>
+
+            </StackPanel>
+
+        </StackPanel>
+
+    </ScrollViewer>
+
+</Page>

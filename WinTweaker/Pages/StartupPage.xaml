@@ -1,0 +1,539 @@
+﻿<Page x:Class="WinTweaker.Pages.StartupPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Background="#0F0F12">
+
+    <Page.Resources>
+
+        <!-- ===================================================== -->
+        <!-- DATAGRID -->
+        <!-- ===================================================== -->
+
+        <Style TargetType="DataGrid">
+
+            <Setter Property="Background"
+                    Value="#18181D"/>
+
+            <Setter Property="Foreground"
+                    Value="White"/>
+
+            <Setter Property="BorderBrush"
+                    Value="#383842"/>
+
+            <Setter Property="BorderThickness"
+                    Value="1"/>
+
+            <Setter Property="RowBackground"
+                    Value="#18181D"/>
+
+            <Setter Property="AlternatingRowBackground"
+                    Value="#15151A"/>
+
+            <Setter Property="HorizontalGridLinesBrush"
+                    Value="#25252C"/>
+
+            <Setter Property="VerticalGridLinesBrush"
+                    Value="#25252C"/>
+
+            <Setter Property="GridLinesVisibility"
+                    Value="Horizontal"/>
+
+            <Setter Property="HeadersVisibility"
+                    Value="Column"/>
+
+            <Setter Property="CanUserResizeColumns"
+                    Value="True"/>
+
+            <Setter Property="CanUserReorderColumns"
+                    Value="True"/>
+
+            <Setter Property="AutoGenerateColumns"
+                    Value="False"/>
+
+            <Setter Property="SelectionMode"
+                    Value="Single"/>
+
+            <Setter Property="SelectionUnit"
+                    Value="FullRow"/>
+
+        </Style>
+
+
+        <!-- ===================================================== -->
+        <!-- DATAGRID HEADER -->
+        <!-- ===================================================== -->
+
+        <Style TargetType="DataGridColumnHeader">
+
+            <Setter Property="Background"
+                    Value="#25252C"/>
+
+            <Setter Property="Foreground"
+                    Value="White"/>
+
+            <Setter Property="BorderBrush"
+                    Value="#383842"/>
+
+            <Setter Property="BorderThickness"
+                    Value="0,0,1,1"/>
+
+            <Setter Property="Padding"
+                    Value="10,8"/>
+
+            <Setter Property="FontWeight"
+                    Value="SemiBold"/>
+
+            <Setter Property="HorizontalContentAlignment"
+                    Value="Left"/>
+
+        </Style>
+
+
+        <!-- ===================================================== -->
+        <!-- DATAGRID CELL -->
+        <!-- ===================================================== -->
+
+        <Style TargetType="DataGridCell">
+
+            <Setter Property="Background"
+                    Value="Transparent"/>
+
+            <Setter Property="Foreground"
+                    Value="White"/>
+
+            <Setter Property="BorderThickness"
+                    Value="0"/>
+
+            <Setter Property="Padding"
+                    Value="8,6"/>
+
+            <Style.Triggers>
+
+                <Trigger Property="IsSelected"
+                         Value="True">
+
+                    <Setter Property="Background"
+                            Value="#34343D"/>
+
+                    <Setter Property="Foreground"
+                            Value="White"/>
+
+                </Trigger>
+
+            </Style.Triggers>
+
+        </Style>
+
+
+        <!-- ===================================================== -->
+        <!-- DATAGRID ROW -->
+        <!-- ===================================================== -->
+
+        <Style TargetType="DataGridRow">
+
+            <Setter Property="Background"
+                    Value="#18181D"/>
+
+            <Setter Property="Foreground"
+                    Value="White"/>
+
+            <Style.Triggers>
+
+                <Trigger Property="IsSelected"
+                         Value="True">
+
+                    <Setter Property="Background"
+                            Value="#34343D"/>
+
+                </Trigger>
+
+            </Style.Triggers>
+
+        </Style>
+
+
+        <!-- ===================================================== -->
+        <!-- TEXTBOX -->
+        <!-- ===================================================== -->
+
+        <Style TargetType="TextBox">
+
+            <Setter Property="Background"
+                    Value="#121216"/>
+
+            <Setter Property="Foreground"
+                    Value="White"/>
+
+            <Setter Property="BorderBrush"
+                    Value="#383842"/>
+
+            <Setter Property="BorderThickness"
+                    Value="1"/>
+
+            <Setter Property="Padding"
+                    Value="10"/>
+
+        </Style>
+
+
+        <!-- ===================================================== -->
+        <!-- BUTTON -->
+        <!-- ===================================================== -->
+
+        <Style TargetType="Button">
+
+            <Setter Property="Background"
+                    Value="#25252C"/>
+
+            <Setter Property="Foreground"
+                    Value="White"/>
+
+            <Setter Property="BorderBrush"
+                    Value="#383842"/>
+
+            <Setter Property="BorderThickness"
+                    Value="1"/>
+
+            <Setter Property="Cursor"
+                    Value="Hand"/>
+
+            <Setter Property="FontSize"
+                    Value="13"/>
+
+            <Style.Triggers>
+
+                <Trigger Property="IsMouseOver"
+                         Value="True">
+
+                    <Setter Property="Background"
+                            Value="#303039"/>
+
+                    <Setter Property="BorderBrush"
+                            Value="#4A4A56"/>
+
+                </Trigger>
+
+                <Trigger Property="IsPressed"
+                         Value="True">
+
+                    <Setter Property="Background"
+                            Value="#3A3A46"/>
+
+                </Trigger>
+
+                <Trigger Property="IsEnabled"
+                         Value="False">
+
+                    <Setter Property="Opacity"
+                            Value="0.5"/>
+
+                </Trigger>
+
+            </Style.Triggers>
+
+        </Style>
+
+    </Page.Resources>
+
+
+    <!-- ========================================================= -->
+    <!-- CONTENT -->
+    <!-- ========================================================= -->
+
+    <Grid Margin="30">
+
+        <Grid.RowDefinitions>
+
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+
+        </Grid.RowDefinitions>
+
+
+        <!-- ===================================================== -->
+        <!-- HEADER -->
+        <!-- ===================================================== -->
+
+        <StackPanel
+            Grid.Row="0"
+            Margin="0,0,0,20">
+
+            <TextBlock
+                Text="Автозагрузка"
+                FontSize="30"
+                FontWeight="Bold"
+                Foreground="White"/>
+
+            <TextBlock
+                Text="Управление программами и системными параметрами запуска Windows."
+                FontSize="14"
+                Foreground="#888890"
+                Margin="0,6,0,0"/>
+
+        </StackPanel>
+
+
+        <!-- ===================================================== -->
+        <!-- TOP BAR -->
+        <!-- ===================================================== -->
+
+        <Grid
+            Grid.Row="1"
+            Margin="0,0,0,15">
+
+            <Grid.ColumnDefinitions>
+
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+
+            </Grid.ColumnDefinitions>
+
+
+            <StackPanel
+                Grid.Column="0"
+                Orientation="Horizontal"
+                VerticalAlignment="Center">
+
+                <Border
+                    Background="#121216"
+                    CornerRadius="8"
+                    Padding="10,7"
+                    Margin="0,0,10,0">
+
+                    <TextBlock
+                        Text="🟢 Обычный запуск"
+                        Foreground="#80C878"
+                        FontSize="12"/>
+
+                </Border>
+
+
+                <Border
+                    Background="#121216"
+                    CornerRadius="8"
+                    Padding="10,7"
+                    Margin="0,0,10,0">
+
+                    <TextBlock
+                        Text="🔒 Системная запись"
+                        Foreground="#B0B0BA"
+                        FontSize="12"/>
+
+                </Border>
+
+
+                <Border
+                    Background="#121216"
+                    CornerRadius="8"
+                    Padding="10,7">
+
+                    <TextBlock
+                        Text="🟣 При входе"
+                        Foreground="#C090FF"
+                        FontSize="12"/>
+
+                </Border>
+
+            </StackPanel>
+
+
+            <StackPanel
+                Grid.Column="1"
+                Orientation="Horizontal">
+
+                <Button
+                    Content="↻ Обновить"
+                    Width="120"
+                    Height="38"
+                    Margin="0,0,10,0"
+                    Click="RefreshButton_Click"/>
+
+                <Button
+                    Content="📁 Папка автозагрузки"
+                    Width="175"
+                    Height="38"
+                    Click="OpenStartupFolderButton_Click"/>
+
+            </StackPanel>
+
+        </Grid>
+
+
+        <!-- ===================================================== -->
+        <!-- DATA GRID -->
+        <!-- ===================================================== -->
+
+        <Border
+            Grid.Row="2"
+            Background="#18181D"
+            BorderBrush="#383842"
+            BorderThickness="1"
+            CornerRadius="10"
+            Padding="1">
+
+            <DataGrid
+                x:Name="StartupDataGrid"
+                SelectionChanged="StartupDataGrid_SelectionChanged">
+
+                <DataGrid.Columns>
+
+                    <DataGridTextColumn
+                        Header="Название"
+                        Binding="{Binding Name}"
+                        Width="220"
+                        MinWidth="150"/>
+
+                    <DataGridTextColumn
+                        Header="Источник"
+                        Binding="{Binding Source}"
+                        Width="160"
+                        MinWidth="120"/>
+
+                    <DataGridTextColumn
+                        Header="Тип"
+                        Binding="{Binding ItemType}"
+                        Width="150"
+                        MinWidth="110"/>
+
+                    <DataGridTextColumn
+                        Header="Команда"
+                        Binding="{Binding Command}"
+                        Width="350"
+                        MinWidth="180"/>
+
+                    <DataGridTextColumn
+                        Header="Расположение"
+                        Binding="{Binding Location}"
+                        Width="300"
+                        MinWidth="180"/>
+
+                    <DataGridTextColumn
+                        Header="Статус"
+                        Binding="{Binding StatusText}"
+                        Width="145"
+                        MinWidth="120"/>
+
+                </DataGrid.Columns>
+
+            </DataGrid>
+
+        </Border>
+
+
+        <!-- ===================================================== -->
+        <!-- DETAILS -->
+        <!-- ===================================================== -->
+
+        <Border
+            Grid.Row="3"
+            Background="#18181D"
+            BorderBrush="#383842"
+            BorderThickness="1"
+            CornerRadius="10"
+            Padding="18"
+            Margin="0,15,0,0">
+
+            <Grid>
+
+                <Grid.ColumnDefinitions>
+
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+
+                </Grid.ColumnDefinitions>
+
+
+                <Grid
+                    Grid.Column="0">
+
+                    <Grid.RowDefinitions>
+
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+
+                    </Grid.RowDefinitions>
+
+
+                    <TextBlock
+                        Grid.Row="0"
+                        x:Name="SelectedNameText"
+                        Text="Ничего не выбрано"
+                        FontSize="18"
+                        FontWeight="SemiBold"
+                        Foreground="White"/>
+
+
+                    <TextBlock
+                        Grid.Row="1"
+                        x:Name="SelectedSourceText"
+                        Text=""
+                        FontSize="12"
+                        Foreground="#888890"
+                        Margin="0,5,0,0"/>
+
+
+                    <TextBlock
+                        Grid.Row="2"
+                        x:Name="SelectedLocationText"
+                        Text=""
+                        FontSize="12"
+                        Foreground="#777782"
+                        TextWrapping="Wrap"
+                        Margin="0,4,15,0"/>
+
+
+                    <TextBox
+                        Grid.Row="3"
+                        x:Name="SelectedCommandText"
+                        Text=""
+                        IsReadOnly="True"
+                        TextWrapping="Wrap"
+                        AcceptsReturn="True"
+                        VerticalScrollBarVisibility="Auto"
+                        HorizontalScrollBarVisibility="Auto"
+                        MinHeight="70"
+                        MaxHeight="120"
+                        Margin="0,12,15,0"/>
+
+                </Grid>
+
+
+                <StackPanel
+                    Grid.Column="1"
+                    VerticalAlignment="Center"
+                    Width="170">
+
+                    <Button
+                        x:Name="ToggleStartupButton"
+                        Content="Отключить"
+                        Width="160"
+                        Height="40"
+                        Margin="0,0,0,10"
+                        Click="ToggleStartupButton_Click"/>
+
+                    <Button
+                        Content="📋 Копировать команду"
+                        Width="160"
+                        Height="40"
+                        Margin="0,0,0,10"
+                        Click="CopyCommandButton_Click"/>
+
+                    <Button
+                        Content="📂 Открыть расположение"
+                        Width="160"
+                        Height="40"
+                        Click="OpenLocationButton_Click"/>
+
+                </StackPanel>
+
+            </Grid>
+
+        </Border>
+
+    </Grid>
+
+</Page>

@@ -1,0 +1,351 @@
+﻿<Window x:Class="WinTweaker.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="WinTweaker"
+        Width="1100"
+        Height="700"
+        MinWidth="950"
+        MinHeight="600"
+        Background="#0F0F12"
+        WindowStartupLocation="CenterScreen">
+
+    <Window.Resources>
+
+        <Style x:Key="NavButtonStyle"
+               TargetType="Button">
+
+            <Setter Property="Background"
+                    Value="Transparent"/>
+
+            <Setter Property="Foreground"
+                    Value="White"/>
+
+            <Setter Property="BorderThickness"
+                    Value="0"/>
+
+            <Setter Property="HorizontalContentAlignment"
+                    Value="Stretch"/>
+
+            <Setter Property="VerticalContentAlignment"
+                    Value="Center"/>
+
+            <Setter Property="Padding"
+                    Value="0"/>
+
+            <Setter Property="Margin"
+                    Value="0,0,0,6"/>
+
+            <Setter Property="Height"
+                    Value="45"/>
+
+            <Setter Property="Cursor"
+                    Value="Hand"/>
+
+            <Setter Property="Template">
+
+                <Setter.Value>
+
+                    <ControlTemplate TargetType="Button">
+
+                        <Border x:Name="ButtonBorder"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="7">
+
+                            <ContentPresenter
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"/>
+
+                        </Border>
+
+                        <ControlTemplate.Triggers>
+
+                            <Trigger Property="IsMouseOver"
+                                     Value="True">
+
+                                <Setter TargetName="ButtonBorder"
+                                        Property="Background"
+                                        Value="#20232B"/>
+
+                            </Trigger>
+
+                            <Trigger Property="IsPressed"
+                                     Value="True">
+
+                                <Setter TargetName="ButtonBorder"
+                                        Property="Background"
+                                        Value="#292C36"/>
+
+                            </Trigger>
+
+                        </ControlTemplate.Triggers>
+
+                    </ControlTemplate>
+
+                </Setter.Value>
+
+            </Setter>
+
+        </Style>
+
+    </Window.Resources>
+
+    <Grid x:Name="MainRoot">
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="220"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+
+        <!-- ========================================================= -->
+        <!-- SIDEBAR -->
+        <!-- ========================================================= -->
+
+        <Border Grid.Column="0"
+                Background="#15171D"
+                BorderBrush="#292C35"
+                BorderThickness="0,0,1,0">
+
+            <Grid>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+
+                <!-- LOGO -->
+
+                <StackPanel Grid.Row="0"
+                            Margin="25,25,20,25">
+
+                    <TextBlock Text="WinTweaker"
+                               FontSize="23"
+                               FontWeight="Bold"
+                               Foreground="White"/>
+
+                    <TextBlock Text="Windows Utility"
+                               FontSize="12"
+                               Foreground="#7D8290"
+                               Margin="0,4,0,0"/>
+
+                </StackPanel>
+
+
+                <!-- NAVIGATION -->
+
+                <StackPanel Grid.Row="1"
+                            Margin="12,0,12,0">
+
+
+                    <!-- Главная -->
+
+                    <Button x:Name="HomeButton"
+                            Style="{StaticResource NavButtonStyle}"
+                            Click="HomeButton_Click">
+
+                        <Grid Margin="14,0">
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="30"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Grid.Column="0"
+                                       Text="⌂"
+                                       FontFamily="Segoe UI Symbol"
+                                       FontSize="18"
+                                       Foreground="White"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+
+                            <TextBlock Grid.Column="1"
+                                       Text="Главная"
+                                       FontSize="14"
+                                       Foreground="White"
+                                       VerticalAlignment="Center"/>
+
+                        </Grid>
+
+                    </Button>
+
+
+                    <!-- Tweaks -->
+
+                    <Button x:Name="TweaksButton"
+                            Style="{StaticResource NavButtonStyle}"
+                            Click="TweaksButton_Click">
+
+                        <Grid Margin="14,0">
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="30"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Grid.Column="0"
+                                       Text="⚡"
+                                       FontSize="18"
+                                       Foreground="White"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+
+                            <TextBlock Grid.Column="1"
+                                       Text="Tweaks"
+                                       FontSize="14"
+                                       Foreground="White"
+                                       VerticalAlignment="Center"/>
+
+                        </Grid>
+
+                    </Button>
+
+
+                    <!-- Unlocker -->
+
+                    <Button x:Name="UnlockerButton"
+                            Style="{StaticResource NavButtonStyle}"
+                            Click="UnlockerButton_Click">
+
+                        <Grid Margin="14,0">
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="30"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Grid.Column="0"
+                                       Text="🔓"
+                                       FontSize="17"
+                                       Foreground="White"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+
+                            <TextBlock Grid.Column="1"
+                                       Text="Unlocker"
+                                       FontSize="14"
+                                       Foreground="White"
+                                       VerticalAlignment="Center"/>
+
+                        </Grid>
+
+                    </Button>
+
+
+                    <!-- Автозагрузка -->
+
+                    <Button x:Name="StartupButton"
+                            Style="{StaticResource NavButtonStyle}"
+                            Click="StartupButton_Click">
+
+                        <Grid Margin="14,0">
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="30"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Grid.Column="0"
+                                       Text="🚀"
+                                       FontSize="17"
+                                       Foreground="White"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+
+                            <TextBlock Grid.Column="1"
+                                       Text="Автозагрузка"
+                                       FontSize="14"
+                                       Foreground="White"
+                                       VerticalAlignment="Center"/>
+
+                        </Grid>
+
+                    </Button>
+
+
+                    <!-- Инструменты -->
+
+                    <Button x:Name="ToolsButton"
+                            Style="{StaticResource NavButtonStyle}"
+                            Click="ToolsButton_Click">
+
+                        <Grid Margin="14,0">
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="30"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Grid.Column="0"
+                                       Text="🛠"
+                                       FontSize="17"
+                                       Foreground="White"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+
+                            <TextBlock Grid.Column="1"
+                                       Text="Инструменты"
+                                       FontSize="14"
+                                       Foreground="White"
+                                       VerticalAlignment="Center"/>
+
+                        </Grid>
+
+                    </Button>
+
+                </StackPanel>
+
+
+                <!-- SETTINGS -->
+
+                <Button x:Name="SettingsButton"
+                        Grid.Row="2"
+                        Style="{StaticResource NavButtonStyle}"
+                        Margin="12,10,12,20"
+                        Click="SettingsButton_Click">
+
+                    <Grid Margin="14,0">
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="30"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="0"
+                                   Text="⚙"
+                                   FontSize="18"
+                                   Foreground="White"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"/>
+
+                        <TextBlock Grid.Column="1"
+                                   Text="Настройки"
+                                   FontSize="14"
+                                   Foreground="White"
+                                   VerticalAlignment="Center"/>
+
+                    </Grid>
+
+                </Button>
+
+            </Grid>
+
+        </Border>
+
+
+        <!-- ========================================================= -->
+        <!-- CONTENT -->
+        <!-- ========================================================= -->
+
+        <Border Grid.Column="1"
+                Background="#0F0F12">
+
+            <Frame x:Name="MainFrame"
+                   NavigationUIVisibility="Hidden"/>
+
+        </Border>
+
+    </Grid>
+
+</Window>

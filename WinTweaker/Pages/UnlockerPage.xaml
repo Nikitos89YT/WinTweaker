@@ -1,0 +1,99 @@
+﻿<Page x:Class="WinTweaker.Pages.UnlockerPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:components="clr-namespace:WinTweaker.Components"
+      Background="#0F1115">
+
+    <ScrollViewer
+        VerticalScrollBarVisibility="Auto"
+        HorizontalScrollBarVisibility="Disabled">
+
+        <StackPanel Margin="30">
+
+
+            <!-- ===================================================== -->
+            <!-- HEADER -->
+            <!-- ===================================================== -->
+
+            <StackPanel Margin="0,0,0,30">
+
+                <TextBlock
+                    Text="🔓 Unlocker"
+                    FontSize="30"
+                    FontWeight="Bold"
+                    Foreground="White"/>
+
+                <TextBlock
+                    Text="Проверка и восстановление системных ограничений Windows"
+                    FontSize="14"
+                    Foreground="#7F8796"
+                    TextWrapping="Wrap"
+                    Margin="0,7,0,0"/>
+
+            </StackPanel>
+
+
+            <!-- ===================================================== -->
+            <!-- SYSTEM RESTRICTIONS -->
+            <!-- ===================================================== -->
+
+            <TextBlock
+                Text="Системные ограничения"
+                FontSize="20"
+                FontWeight="Bold"
+                Foreground="White"
+                Margin="0,0,0,15"/>
+
+
+            <components:UnlockerCard
+                x:Name="TaskManagerCard"
+                Title="Диспетчер задач"
+                Description="Проверяет и восстанавливает доступ к Диспетчеру задач Windows."
+                Status="Проверка..."
+                ButtonText="Проверить"
+                ActionClicked="TaskManagerCard_ActionClicked"
+                Margin="0,0,0,18"/>
+
+
+            <!-- ===================================================== -->
+            <!-- OTHER RESTRICTIONS -->
+            <!-- ===================================================== -->
+
+            <TextBlock
+                Text="Другие ограничения"
+                FontSize="20"
+                FontWeight="Bold"
+                Foreground="White"
+                Margin="0,2,0,15"/>
+
+
+            <Border
+                Background="#181C23"
+                CornerRadius="12"
+                Padding="22">
+
+                <StackPanel>
+
+                    <TextBlock
+                        Text="Новые модули появятся позже"
+                        FontSize="16"
+                        FontWeight="SemiBold"
+                        Foreground="White"/>
+
+                    <TextBlock
+                        Text="CMD • PowerShell • Выполнить • Панель управления • Windows Settings и другие системные ограничения."
+                        FontSize="13"
+                        Foreground="#8E96A5"
+                        TextWrapping="Wrap"
+                        Margin="0,8,0,0"/>
+
+                </StackPanel>
+
+            </Border>
+
+
+        </StackPanel>
+
+    </ScrollViewer>
+
+</Page>
