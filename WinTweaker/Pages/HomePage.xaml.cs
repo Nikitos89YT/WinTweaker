@@ -1,66 +1,45 @@
-﻿using System;
-using System.Windows;
-using System.Windows.Threading;
+﻿using System.Windows;
 using WinTweaker.Services;
 
-namespace WinTweaker.Pages
+namespace WinTweaker.Pages;
+
+public partial class HomePage
 {
-    public partial class HomePage
+    public HomePage()
     {
-        private readonly DispatcherTimer _monitorTimer;
-
-        public HomePage()
+        InitializeComponent();
+        CpuText.Text = SystemInfoService.GetCpu();
+        GpuText.Text = SystemInfoService.GetGpu();
+        RamText.Text = SystemInfoService.GetRam();
+        WindowsText.Text = SystemInfoService.GetWindows();
+        MotherboardText.Text = SystemInfoService.GetMotherboard();
+        Loaded += (_, _) =>
         {
-            InitializeComponent();
-
-            LoadSystemInfo();
-
-            _monitorTimer = new DispatcherTimer
-            {
-                Interval = TimeSpan.FromSeconds(1)
-            };
-
-            _monitorTimer.Tick += MonitorTimer_Tick;
-
-            _monitorTimer.Start();
-
-            // Первый живой замер
-            UpdateMonitor();
-        }
-
-        private void LoadSystemInfo()
+            LiveMonitorWindow.LockChanged += UpdateUnlockButton;
+            UpdateUnlockButton();
+            LiveMetrics.Subscribe(UpdateMonitor);
+        };
+        Unloaded += (_, _) =>
         {
-            CpuText.Text = SystemInfoService.GetCpu();
-            GpuText.Text = SystemInfoService.GetGpu();
-            RamText.Text = SystemInfoService.GetRam();
-            WindowsText.Text = SystemInfoService.GetWindows();
-            MotherboardText.Text = SystemInfoService.GetMotherboard();
-        }
-
-        private void MonitorTimer_Tick(object? sender, EventArgs e)
-        {
-            UpdateMonitor();
-        }
-
-        private void UpdateMonitor()
-        {
-            double cpu = SystemInfoService.GetCpuUsage();
-            double ram = SystemInfoService.GetRamUsage();
-            double gpu = SystemInfoService.GetGpuUsage();
-
-            CpuUsageText.Text = $"{cpu:F0}%";
-            CpuProgress.Value = cpu;
-
-            RamUsageText.Text = $"{ram:F0}%";
-            RamProgress.Value = ram;
-
-            GpuUsageText.Text = $"{gpu:F0}%";
-            GpuProgress.Value = gpu;
-        }
-
-        public void StopMonitoring()
-        {
-            _monitorTimer.Stop();
-        }
+            LiveMonitorWindow.LockChanged -= UpdateUnlockButton;
+            LiveMetrics.Unsubscribe(UpdateMonitor);
+        };
     }
+
+    private void UpdateMonitor(Metrics sample)
+    {
+        CpuUsageText.Text = Format(sample.Cpu);
+        RamUsageText.Text = Format(sample.Ram);
+        GpuUsageText.Text = Format(sample.Gpu);
+        CpuProgress.Value = sample.Cpu ?? 0;
+        RamProgress.Value = sample.Ram ?? 0;
+        GpuProgress.Value = sample.Gpu ?? 0;
+    }
+
+    private static string Format(double? value) => value is double n ? $"{n:F0}%" : "—";
+
+    private void ShowOverlay_Click(object sender, RoutedEventArgs e) => LiveMonitorWindow.Toggle();
+    private void UnlockOverlay_Click(object sender, RoutedEventArgs e) => LiveMonitorWindow.Unlock();
+    private void UpdateUnlockButton() => UnlockOverlayButton.Visibility =
+        LiveMonitorWindow.IsLocked ? Visibility.Visible : Visibility.Collapsed;
 }

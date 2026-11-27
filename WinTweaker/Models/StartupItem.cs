@@ -1,4 +1,4 @@
-﻿namespace WinTweaker.Models
+namespace WinTweaker.Models
 {
     public class StartupItem
     {
@@ -28,6 +28,8 @@
         public string StartupApprovedSubKey { get; set; } = "";
 
         public string OriginalPath { get; set; } = "";
+
+        public int LogonIndex { get; set; }
 
         public bool CanToggle { get; set; }
 

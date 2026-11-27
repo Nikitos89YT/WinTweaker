@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
@@ -19,6 +19,8 @@ namespace WinTweaker.Services
 
         public string StatusText { get; set; } = "";
 
+        public int LogonIndex { get; set; }
+        public bool Enabled { get; set; } = true;
         public bool CanEdit { get; set; }
 
         public bool IsCritical { get; set; }
@@ -215,24 +217,6 @@ $tasks = Get-ScheduledTask -ErrorAction SilentlyContinue
 
 $result = foreach ($task in $tasks) {
 
-    $hasLogonTrigger = $false
-
-    foreach ($trigger in @($task.Triggers)) {
-
-        if ($null -eq $trigger) {
-            continue
-        }
-
-        if ($trigger.CimClass.CimClassName -eq 'MSFT_TaskLogonTrigger') {
-            $hasLogonTrigger = $true
-            break
-        }
-    }
-
-    if (-not $hasLogonTrigger) {
-        continue
-    }
-
     $actions = @(
         $task.Actions |
         ForEach-Object {
@@ -249,11 +233,19 @@ $result = foreach ($task in $tasks) {
         }
     )
 
-    [PSCustomObject]@{
+    $index = 0
+    foreach ($trigger in $task.Triggers) {
+        $index++
+        if ($trigger.CimClass.CimClassName -ne 'MSFT_TaskLogonTrigger') { continue }
+        [PSCustomObject]@{
+        Index = $index
+        Enabled = [bool]$trigger.Enabled
+        Author = [string]$task.Author
         TaskName = [string]$task.TaskName
         TaskPath = [string]$task.TaskPath
         State    = [string]$task.State
         Action   = ($actions -join ' | ')
+        }
     }
 }
 
@@ -363,6 +355,8 @@ else {
                     "Disabled",
                     StringComparison.OrdinalIgnoreCase);
 
+            int index = element.GetProperty("Index").GetInt32();
+            bool enabled = element.GetProperty("Enabled").GetBoolean();
             result.Add(
                 new StartupSystemItem
                 {
@@ -381,16 +375,41 @@ else {
                         fullTaskPath,
 
                     StatusText =
-                        disabled
+                        disabled || !enabled
                             ? "🟠 Отключено"
                             : "🟣 При входе",
 
-                    CanEdit =
-                        false,
+                    LogonIndex = index,
+                    Enabled = enabled && !disabled,
+                    CanEdit = !disabled && IsEditableTask(fullTaskPath, GetJsonString(element, "Author")),
 
                     IsCritical =
                         false
                 });
+        }
+
+        private static bool IsEditableTask(string path, string author) =>
+            path.StartsWith(@"\", StringComparison.Ordinal) &&
+            !path.StartsWith(@"\Microsoft\", StringComparison.OrdinalIgnoreCase) &&
+            !author.StartsWith("Microsoft", StringComparison.OrdinalIgnoreCase);
+
+        internal static void SetLogonEnabled(string path, int index, bool enabled)
+        {
+            int split = path.LastIndexOf('\\');
+            dynamic scheduler = Activator.CreateInstance(Type.GetTypeFromProgID("Schedule.Service", true)!)!;
+            scheduler.Connect();
+            dynamic folder = scheduler.GetFolder(split == 0 ? @"\" : path[..split]);
+            dynamic task = folder.GetTask(path[(split + 1)..]);
+            dynamic definition = task.Definition;
+            if (!task.Enabled || !IsEditableTask((string)task.Path, (string?)definition.RegistrationInfo.Author ?? ""))
+                throw new InvalidOperationException("Задача защищена или отключена целиком.");
+            dynamic trigger = definition.Triggers[index];
+            if ((int)trigger.Type != 9)
+                throw new InvalidOperationException("Триггер изменился. Обновите список.");
+            trigger.Enabled = enabled;
+            // TASK_UPDATE | TASK_DONT_ADD_PRINCIPAL_ACE | TASK_IGNORE_REGISTRATION_TRIGGERS
+            folder.RegisterTaskDefinition(task.Name, definition, 4 | 16 | 32, null, null,
+                definition.Principal.LogonType, null);
         }
 
         // =========================================================

@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.NetworkInformation;
-using System.Net.Sockets;
+using System.Text.Json;
 using System.Text;
 
 namespace WinTweaker.Services
@@ -56,31 +56,19 @@ namespace WinTweaker.Services
             string output = RunCommand(
                 "powershell.exe",
                 "-NoProfile -ExecutionPolicy Bypass -Command " +
-                "\"Get-NetAdapter | " +
-                "Select-Object Name, InterfaceDescription, Status | " +
-                "ConvertTo-Csv -NoTypeInformation\"");
+                "\"[Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false); " +
+                "ConvertTo-Json -Compress -InputObject @(Get-NetAdapter | " +
+                "Select-Object Name, InterfaceDescription, @{Name='State';Expression={[string]$_.Status}})\"");
 
             if (string.IsNullOrWhiteSpace(output))
                 return result;
 
-            string[] lines = output
-                .Split(
-                    new[] { '\r', '\n' },
-                    StringSplitOptions.RemoveEmptyEntries);
-
-            if (lines.Length <= 1)
-                return result;
-
-            foreach (string line in lines.Skip(1))
+            using var adapters = JsonDocument.Parse(output);
+            foreach (var item in adapters.RootElement.EnumerateArray())
             {
-                string[] parts = ParseCsvLine(line);
-
-                if (parts.Length < 3)
-                    continue;
-
-                string name = parts[0];
-                string description = parts[1];
-                string status = parts[2];
+                string name = item.GetProperty("Name").GetString() ?? "";
+                string description = item.GetProperty("InterfaceDescription").GetString() ?? "";
+                string status = item.GetProperty("State").GetString() ?? "";
 
                 bool enabled =
                     !status.Equals(
@@ -138,82 +126,24 @@ namespace WinTweaker.Services
                 "/flushdns") == 0;
         }
 
-        public static string GetCurrentDns()
+        public static string GetCurrentDns(string? adapterName)
         {
+            if (string.IsNullOrEmpty(adapterName))
+                return "Выберите сетевой адаптер";
+
             try
             {
-                var result = new List<string>();
+                var adapter = NetworkInterface.GetAllNetworkInterfaces().FirstOrDefault(
+                    item => string.Equals(item.Name, adapterName, StringComparison.OrdinalIgnoreCase));
+                if (adapter == null)
+                    return "Адаптер больше не доступен";
 
-                foreach (NetworkInterface networkInterface
-                         in NetworkInterface.GetAllNetworkInterfaces())
-                {
-                    if (networkInterface.NetworkInterfaceType ==
-                        NetworkInterfaceType.Loopback)
-                    {
-                        continue;
-                    }
-
-                    string interfaceName =
-                        networkInterface.Name;
-
-                    string description =
-                        networkInterface.Description;
-
-                    string combinedName =
-                        $"{interfaceName} {description}";
-
-                    if (combinedName.Contains(
-                            "Radmin",
-                            StringComparison.OrdinalIgnoreCase) ||
-                        combinedName.Contains(
-                            "Virtual",
-                            StringComparison.OrdinalIgnoreCase) ||
-                        combinedName.Contains(
-                            "TAP",
-                            StringComparison.OrdinalIgnoreCase) ||
-                        combinedName.Contains(
-                            "Loopback",
-                            StringComparison.OrdinalIgnoreCase))
-                    {
-                        continue;
-                    }
-
-                    IPInterfaceProperties properties;
-
-                    try
-                    {
-                        properties =
-                            networkInterface.GetIPProperties();
-                    }
-                    catch
-                    {
-                        continue;
-                    }
-
-                    var ipv4Dns = properties
-                        .DnsAddresses
-                        .Where(address =>
-                            address.AddressFamily ==
-                            AddressFamily.InterNetwork)
-                        .Select(address => address.ToString())
-                        .Distinct()
-                        .ToList();
-
-                    if (ipv4Dns.Count == 0)
-                        continue;
-
-                    result.Add(
-                        $"{interfaceName} : {string.Join(", ", ipv4Dns)}");
-                }
-
-                if (result.Count == 0)
-                    return "DNS не настроен";
-
-                return string.Join(
-                    Environment.NewLine,
-                    result);
+                var addresses = adapter.GetIPProperties().DnsAddresses.Distinct().ToArray();
+                return addresses.Length == 0
+                    ? "DNS-серверы не указаны"
+                    : string.Join(", ", addresses.Select(address => address.ToString()));
             }
-            catch
+            catch (NetworkInformationException)
             {
                 return "Не удалось определить DNS";
             }
@@ -328,9 +258,11 @@ namespace WinTweaker.Services
         private static bool RunPowerShellCommand(
             string command)
         {
+            string script = "$ErrorActionPreference = 'Stop'; " + command;
+            string encoded = Convert.ToBase64String(Encoding.Unicode.GetBytes(script));
             int exitCode = RunProcess(
                 "powershell.exe",
-                $"-NoProfile -ExecutionPolicy Bypass -Command \"{command}\"");
+                $"-NoProfile -EncodedCommand {encoded}");
 
             return exitCode == 0;
         }
@@ -379,7 +311,7 @@ namespace WinTweaker.Services
                     UseShellExecute = false,
                     CreateNoWindow = true,
                     RedirectStandardOutput = true,
-                    RedirectStandardError = true,
+                    RedirectStandardError = false,
                     StandardOutputEncoding = Encoding.UTF8
                 };
 
@@ -390,7 +322,7 @@ namespace WinTweaker.Services
 
                 process.WaitForExit();
 
-                return output;
+                return process.ExitCode == 0 ? output : string.Empty;
             }
             catch
             {
@@ -410,42 +342,5 @@ namespace WinTweaker.Services
                 "''");
         }
 
-        private static string[] ParseCsvLine(
-            string line)
-        {
-            var values =
-                new List<string>();
-
-            var current =
-                new StringBuilder();
-
-            bool insideQuotes = false;
-
-            foreach (char c in line)
-            {
-                if (c == '"')
-                {
-                    insideQuotes = !insideQuotes;
-                    continue;
-                }
-
-                if (c == ',' && !insideQuotes)
-                {
-                    values.Add(
-                        current.ToString());
-
-                    current.Clear();
-
-                    continue;
-                }
-
-                current.Append(c);
-            }
-
-            values.Add(
-                current.ToString());
-
-            return values.ToArray();
-        }
     }
 }

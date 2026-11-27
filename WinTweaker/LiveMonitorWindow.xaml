@@ -1,0 +1,56 @@
+<Window x:Class="WinTweaker.LiveMonitorWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Live Monitor" Width="314" SizeToContent="Height" ResizeMode="NoResize"
+        WindowStyle="None" AllowsTransparency="True" Background="Transparent"
+        Topmost="True" ShowActivated="False" ShowInTaskbar="False">
+    <Window.Resources>
+        <Style x:Key="OverlayButton" TargetType="Button" BasedOn="{StaticResource ActionButtonStyle}">
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Width" Value="28"/>
+            <Setter Property="Height" Value="28"/>
+            <Setter Property="FontFamily" Value="Segoe MDL2 Assets"/>
+            <Setter Property="Margin" Value="4,0,0,0"/>
+            <Style.Triggers>
+                <Trigger Property="Tag" Value="Active">
+                    <Setter Property="Background" Value="#3B304F"/>
+                    <Setter Property="Foreground" Value="#E6D4FF"/>
+                    <Setter Property="BorderBrush" Value="#A58BC8"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+    <Border CornerRadius="10" Background="#F2181C23" BorderBrush="#47495B" BorderThickness="1" Padding="12">
+        <StackPanel>
+            <DockPanel Margin="0,0,0,9">
+                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                    <Button x:Name="MetricsButton" Style="{StaticResource OverlayButton}" Content="&#xE713;" Click="Metrics_Click"
+                            ToolTip="Настроить показатели" AutomationProperties.Name="Настроить показатели"/>
+                    <Button x:Name="GraphButton" Style="{StaticResource OverlayButton}" Content="&#xE9EC;" Click="Graphs_Click"
+                            ToolTip="Показать графики" AutomationProperties.Name="{Binding ToolTip, RelativeSource={RelativeSource Self}}"/>
+                    <Button x:Name="FpsButton" Style="{StaticResource OverlayButton}" Content="FPS" FontFamily="Segoe UI"
+                            FontSize="11" FontWeight="SemiBold" Width="36" Click="Fps_Click" ToolTip="Включить измерение FPS"
+                            AutomationProperties.Name="{Binding ToolTip, RelativeSource={RelativeSource Self}}"/>
+                    <Button x:Name="LockButton" Style="{StaticResource OverlayButton}" Content="&#xE72E;" Click="Lock_Click"
+                            ToolTip="Пропускать клики сквозь оверлей" AutomationProperties.Name="Пропускать клики сквозь оверлей"/>
+                    <Popup x:Name="UnlockPopup" PlacementTarget="{Binding ElementName=LockButton}"
+                           Placement="Relative" StaysOpen="True" AllowsTransparency="True">
+                        <Button x:Name="UnlockButton" Style="{StaticResource OverlayButton}" Content="&#xE785;" Tag="Active" Margin="0" Focusable="False"
+                                Width="{Binding ActualWidth, ElementName=LockButton}"
+                                Height="{Binding ActualHeight, ElementName=LockButton}"
+                                AutomationProperties.Name="Разблокировать оверлей"
+                                ToolTip="Разблокировать оверлей" Click="Unlock_Click"/>
+                    </Popup>
+                    <Button Style="{StaticResource OverlayButton}" Content="&#xE711;" Click="Close_Click"
+                            ToolTip="Закрыть оверлей" AutomationProperties.Name="Закрыть оверлей"/>
+                </StackPanel>
+                <TextBlock Text="Live Monitor" Foreground="#F1F2F7" FontWeight="SemiBold" VerticalAlignment="Center"
+                           Background="Transparent" Cursor="SizeAll" MouseLeftButtonDown="Drag_Header"/>
+            </DockPanel>
+            <StackPanel x:Name="Rows"/>
+            <TextBlock x:Name="FpsStatus" Foreground="#BAC0CC" TextWrapping="Wrap" FontSize="11"/>
+            <TextBlock x:Name="LockedHint" Text="Клики проходят сквозь панель. Нажмите на замок, чтобы вернуть управление."
+                       Foreground="#BAC0CC" TextWrapping="Wrap" FontSize="11" Visibility="Collapsed" Margin="0,6,0,0"/>
+        </StackPanel>
+    </Border>
+</Window>

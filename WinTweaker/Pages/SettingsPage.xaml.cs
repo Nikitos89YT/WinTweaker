@@ -1,4 +1,4 @@
-﻿using System.Windows;
+using System.Windows;
 using System.Windows.Controls;
 using WinTweaker.Services;
 
@@ -98,42 +98,33 @@ namespace WinTweaker.Pages
             object sender,
             RoutedEventArgs e)
         {
-            SaveSettingsFromInterface();
-
-            bool success =
-                SettingsService.Save();
-
-            if (!success)
-            {
-                MessageBox.Show(
-                    "Не удалось сохранить настройки.",
-                    "WinTweaker",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error);
-
-                return;
-            }
-
-
-            ApplySettingsToWindow();
-
-
-            MessageBox.Show(
-                "Настройки сохранены и применены.",
-                "WinTweaker",
-                MessageBoxButton.OK,
-                MessageBoxImage.Information);
+            PersistSettings();
         }
 
+        private void Setting_Click(object sender, RoutedEventArgs e) => PersistSettings();
+
+        private void PersistSettings()
+        {
+            if (_isLoadingSettings || !IsLoaded) return;
+            try
+            {
+                SettingsService.ApplyBackup(ReadInterface());
+                ApplySettingsToWindow();
+            }
+            catch (Exception ex)
+            {
+                LoadSettingsToInterface();
+                MessageBox.Show($"Не удалось сохранить настройки. {ex.Message}", "WinTweaker");
+            }
+        }
 
         // =========================================================
         // SAVE DATA
         // =========================================================
 
-        private void SaveSettingsFromInterface()
+        private AppSettings ReadInterface()
         {
-            AppSettings settings =
-                SettingsService.Current;
+            var settings = new AppSettings { UiScale = SettingsService.Current.UiScale };
 
 
             // =====================================================
@@ -186,6 +177,7 @@ namespace WinTweaker.Pages
 
             settings.BackupBeforeChanges =
                 BackupBeforeChangesCheckBox.IsChecked == true;
+            return settings;
         }
 
 
@@ -220,17 +212,7 @@ namespace WinTweaker.Pages
                 return;
 
 
-            string accent =
-                AccentColorComboBox.SelectedValue
-                as string
-                ?? "Blue";
-
-
-            SettingsService.Current.AccentColor =
-                accent;
-
-
-            ApplySettingsToWindow();
+            PersistSettings();
         }
 
 
@@ -253,14 +235,15 @@ namespace WinTweaker.Pages
                 return;
 
 
-            SettingsService.ResetToDefaults();
+            try { SettingsService.ResetToDefaults(); }
+            catch (Exception ex) { MessageBox.Show(ex.Message, "Ошибка сохранения"); return; }
 
             LoadSettingsToInterface();
 
             ApplySettingsToWindow();
 
 
-            MessageBox.Show(
+            if (SettingsService.Current.ShowNotifications) MessageBox.Show(
                 "Настройки сброшены.",
                 "WinTweaker",
                 MessageBoxButton.OK,

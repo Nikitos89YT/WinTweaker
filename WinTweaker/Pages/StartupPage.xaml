@@ -1,7 +1,7 @@
-﻿<Page x:Class="WinTweaker.Pages.StartupPage"
+<Page x:Class="WinTweaker.Pages.StartupPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      Background="#0F0F12">
+      Background="{DynamicResource ThemeWindow}">
 
     <Page.Resources>
 
@@ -12,28 +12,28 @@
         <Style TargetType="DataGrid">
 
             <Setter Property="Background"
-                    Value="#18181D"/>
+                    Value="{DynamicResource ThemeCard}"/>
 
             <Setter Property="Foreground"
-                    Value="White"/>
+                    Value="{DynamicResource ThemeText}"/>
 
             <Setter Property="BorderBrush"
-                    Value="#383842"/>
+                    Value="{DynamicResource ThemeBorder}"/>
 
             <Setter Property="BorderThickness"
                     Value="1"/>
 
             <Setter Property="RowBackground"
-                    Value="#18181D"/>
+                    Value="{DynamicResource ThemeCard}"/>
 
             <Setter Property="AlternatingRowBackground"
-                    Value="#15151A"/>
+                    Value="{DynamicResource ThemeCard}"/>
 
             <Setter Property="HorizontalGridLinesBrush"
-                    Value="#25252C"/>
+                    Value="{DynamicResource ThemeBorder}"/>
 
             <Setter Property="VerticalGridLinesBrush"
-                    Value="#25252C"/>
+                    Value="{DynamicResource ThemeBorder}"/>
 
             <Setter Property="GridLinesVisibility"
                     Value="Horizontal"/>
@@ -66,13 +66,13 @@
         <Style TargetType="DataGridColumnHeader">
 
             <Setter Property="Background"
-                    Value="#25252C"/>
+                    Value="{DynamicResource ThemeControl}"/>
 
             <Setter Property="Foreground"
-                    Value="White"/>
+                    Value="{DynamicResource ThemeText}"/>
 
             <Setter Property="BorderBrush"
-                    Value="#383842"/>
+                    Value="{DynamicResource ThemeBorder}"/>
 
             <Setter Property="BorderThickness"
                     Value="0,0,1,1"/>
@@ -99,7 +99,7 @@
                     Value="Transparent"/>
 
             <Setter Property="Foreground"
-                    Value="White"/>
+                    Value="{DynamicResource ThemeText}"/>
 
             <Setter Property="BorderThickness"
                     Value="0"/>
@@ -113,10 +113,10 @@
                          Value="True">
 
                     <Setter Property="Background"
-                            Value="#34343D"/>
+                            Value="{DynamicResource ThemeHover}"/>
 
                     <Setter Property="Foreground"
-                            Value="White"/>
+                            Value="{DynamicResource ThemeText}"/>
 
                 </Trigger>
 
@@ -132,10 +132,10 @@
         <Style TargetType="DataGridRow">
 
             <Setter Property="Background"
-                    Value="#18181D"/>
+                    Value="{DynamicResource ThemeCard}"/>
 
             <Setter Property="Foreground"
-                    Value="White"/>
+                    Value="{DynamicResource ThemeText}"/>
 
             <Style.Triggers>
 
@@ -143,7 +143,7 @@
                          Value="True">
 
                     <Setter Property="Background"
-                            Value="#34343D"/>
+                            Value="{DynamicResource ThemeHover}"/>
 
                 </Trigger>
 
@@ -159,13 +159,13 @@
         <Style TargetType="TextBox">
 
             <Setter Property="Background"
-                    Value="#121216"/>
+                    Value="{DynamicResource ThemeWindow}"/>
 
             <Setter Property="Foreground"
-                    Value="White"/>
+                    Value="{DynamicResource ThemeText}"/>
 
             <Setter Property="BorderBrush"
-                    Value="#383842"/>
+                    Value="{DynamicResource ThemeBorder}"/>
 
             <Setter Property="BorderThickness"
                     Value="1"/>
@@ -176,62 +176,6 @@
         </Style>
 
 
-        <!-- ===================================================== -->
-        <!-- BUTTON -->
-        <!-- ===================================================== -->
-
-        <Style TargetType="Button">
-
-            <Setter Property="Background"
-                    Value="#25252C"/>
-
-            <Setter Property="Foreground"
-                    Value="White"/>
-
-            <Setter Property="BorderBrush"
-                    Value="#383842"/>
-
-            <Setter Property="BorderThickness"
-                    Value="1"/>
-
-            <Setter Property="Cursor"
-                    Value="Hand"/>
-
-            <Setter Property="FontSize"
-                    Value="13"/>
-
-            <Style.Triggers>
-
-                <Trigger Property="IsMouseOver"
-                         Value="True">
-
-                    <Setter Property="Background"
-                            Value="#303039"/>
-
-                    <Setter Property="BorderBrush"
-                            Value="#4A4A56"/>
-
-                </Trigger>
-
-                <Trigger Property="IsPressed"
-                         Value="True">
-
-                    <Setter Property="Background"
-                            Value="#3A3A46"/>
-
-                </Trigger>
-
-                <Trigger Property="IsEnabled"
-                         Value="False">
-
-                    <Setter Property="Opacity"
-                            Value="0.5"/>
-
-                </Trigger>
-
-            </Style.Triggers>
-
-        </Style>
 
     </Page.Resources>
 
@@ -264,12 +208,12 @@
                 Text="Автозагрузка"
                 FontSize="30"
                 FontWeight="Bold"
-                Foreground="White"/>
+                Foreground="{DynamicResource ThemeText}"/>
 
             <TextBlock
                 Text="Управление программами и системными параметрами запуска Windows."
                 FontSize="14"
-                Foreground="#888890"
+                Foreground="{DynamicResource ThemeMuted}"
                 Margin="0,6,0,0"/>
 
         </StackPanel>
@@ -297,7 +241,7 @@
                 VerticalAlignment="Center">
 
                 <Border
-                    Background="#121216"
+                    Background="{DynamicResource ThemeWindow}"
                     CornerRadius="8"
                     Padding="10,7"
                     Margin="0,0,10,0">
@@ -311,21 +255,21 @@
 
 
                 <Border
-                    Background="#121216"
+                    Background="{DynamicResource ThemeWindow}"
                     CornerRadius="8"
                     Padding="10,7"
                     Margin="0,0,10,0">
 
                     <TextBlock
                         Text="🔒 Системная запись"
-                        Foreground="#B0B0BA"
+                        Foreground="{DynamicResource ThemeMuted}"
                         FontSize="12"/>
 
                 </Border>
 
 
                 <Border
-                    Background="#121216"
+                    Background="{DynamicResource ThemeWindow}"
                     CornerRadius="8"
                     Padding="10,7">
 
@@ -367,8 +311,8 @@
 
         <Border
             Grid.Row="2"
-            Background="#18181D"
-            BorderBrush="#383842"
+            Background="{DynamicResource ThemeCard}"
+            BorderBrush="{DynamicResource ThemeBorder}"
             BorderThickness="1"
             CornerRadius="10"
             Padding="1">
@@ -413,7 +357,24 @@
                         Header="Статус"
                         Binding="{Binding StatusText}"
                         Width="145"
-                        MinWidth="120"/>
+                        MinWidth="120">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Foreground" Value="{DynamicResource ThemeMuted}"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding StatusText}" Value="🟢 Включено">
+                                        <Setter Property="Foreground" Value="#80C878"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding StatusText}" Value="🟣 При входе">
+                                        <Setter Property="Foreground" Value="#C090FF"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding StatusText}" Value="🟠 Отключено">
+                                        <Setter Property="Foreground" Value="#EDA663"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
 
                 </DataGrid.Columns>
 
@@ -428,8 +389,8 @@
 
         <Border
             Grid.Row="3"
-            Background="#18181D"
-            BorderBrush="#383842"
+            Background="{DynamicResource ThemeCard}"
+            BorderBrush="{DynamicResource ThemeBorder}"
             BorderThickness="1"
             CornerRadius="10"
             Padding="18"
@@ -464,7 +425,7 @@
                         Text="Ничего не выбрано"
                         FontSize="18"
                         FontWeight="SemiBold"
-                        Foreground="White"/>
+                        Foreground="{DynamicResource ThemeText}"/>
 
 
                     <TextBlock
@@ -472,7 +433,7 @@
                         x:Name="SelectedSourceText"
                         Text=""
                         FontSize="12"
-                        Foreground="#888890"
+                        Foreground="{DynamicResource ThemeMuted}"
                         Margin="0,5,0,0"/>
 
 
@@ -481,7 +442,7 @@
                         x:Name="SelectedLocationText"
                         Text=""
                         FontSize="12"
-                        Foreground="#777782"
+                        Foreground="{DynamicResource ThemeMuted}"
                         TextWrapping="Wrap"
                         Margin="0,4,15,0"/>
 

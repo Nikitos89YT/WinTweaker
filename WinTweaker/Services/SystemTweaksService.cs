@@ -122,12 +122,6 @@ namespace WinTweaker.Services
                             mmcPath,
                             "diskmgmt.msc");
 
-                    case SystemComponent.Services:
-
-                        return StartProcess(
-                            mmcPath,
-                            "services.msc");
-
                     case SystemComponent.EventViewer:
 
                         return StartProcess(
@@ -202,26 +196,6 @@ namespace WinTweaker.Services
                 return false;
             }
         }
-
-        // =========================================================
-        // CACHE HELPERS
-        // =========================================================
-
-        /// <summary>
-        /// Очищает кэш значков.
-        /// </summary>
-        public static CleanupResult CleanIconCache()
-        {
-            return CleanupService.CleanIconCache();
-        }
-
-        /// <summary>
-        /// Очищает кэш миниатюр.
-        /// </summary>
-        public static CleanupResult CleanThumbnailCache()
-        {
-            return CleanupService.CleanThumbnailCache();
-        }
     }
 
     public enum SystemComponent
@@ -229,7 +203,6 @@ namespace WinTweaker.Services
         TaskManager,
         DeviceManager,
         DiskManagement,
-        Services,
         EventViewer,
         ResourceMonitor,
         SystemProperties,

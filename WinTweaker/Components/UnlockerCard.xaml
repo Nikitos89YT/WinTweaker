@@ -1,10 +1,10 @@
-﻿<UserControl x:Class="WinTweaker.Components.UnlockerCard"
+<UserControl x:Class="WinTweaker.Components.UnlockerCard"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             Height="115"
+             MinHeight="115"
              Margin="0,0,0,12">
 
-    <Border Background="#181C23"
+    <Border Background="{DynamicResource ThemeCard}"
             CornerRadius="12"
             Padding="22">
 
@@ -18,23 +18,23 @@
             <StackPanel Grid.Column="0"
                         VerticalAlignment="Center">
 
-                <TextBlock x:Name="TitleText"
+                <TextBlock x:Name="TitleText" TextWrapping="Wrap"
                            Text="Название"
                            FontSize="18"
                            FontWeight="Bold"
-                           Foreground="White"/>
+                           Foreground="{DynamicResource ThemeText}"/>
 
                 <TextBlock x:Name="DescriptionText"
                            Text="Описание"
                            FontSize="13"
-                           Foreground="#8E96A5"
+                           Foreground="{DynamicResource ThemeMuted}"
                            TextWrapping="Wrap"
                            Margin="0,5,0,0"/>
 
-                <TextBlock x:Name="StatusText"
+                <TextBlock x:Name="StatusText" TextWrapping="Wrap"
                            Text="● Проверка..."
                            FontSize="13"
-                           Foreground="#8E96A5"
+                           Foreground="{DynamicResource ThemeMuted}"
                            Margin="0,7,0,0"/>
 
             </StackPanel>
@@ -46,8 +46,8 @@
                     Height="40"
                     Margin="20,0,0,0"
                     VerticalAlignment="Center"
-                    Background="#252A34"
-                    Foreground="White"
+                    Background="{DynamicResource ThemeControl}"
+                    Foreground="{DynamicResource ThemeText}"
                     BorderThickness="0"
                     Click="ActionButton_Click"/>
 

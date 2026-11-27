@@ -1,4 +1,4 @@
-﻿using System.Windows;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using WinTweaker.Pages;
@@ -27,19 +27,18 @@ namespace WinTweaker
 
         public void ApplyAppSettings()
         {
-            // Масштаб полностью отключён.
-            // Интерфейс всегда работает в обычном размере окна.
+            var dictionaries = Application.Current.Resources.MergedDictionaries;
+            var palette = new Uri(SettingsService.Current.DarkTheme ? "/WinTweaker;component/Themes/Dark.xaml" : "/WinTweaker;component/Themes/Light.xaml", UriKind.Relative);
+            if (dictionaries[0].Source != palette)
+                dictionaries[0] = new ResourceDictionary { Source = palette };
+            ApplyAccentColor(SettingsService.Current.AccentColor);
+        }
 
-            Width = 1100;
-            Height = 700;
-
-            MinWidth = 950;
-            MinHeight = 600;
-
-            ActiveBrush =
-                CreateAccentBrush(
-                    SettingsService.Current.AccentColor);
-
+        internal void ApplyAccentColor(string accentColor)
+        {
+            var accent = (SolidColorBrush)CreateAccentBrush(accentColor);
+            ActiveBrush = SettingsService.Current.DarkTheme ? accent : new SolidColorBrush(
+                Color.FromRgb((byte)(160 + accent.Color.R), (byte)(160 + accent.Color.G), (byte)(160 + accent.Color.B)));
             if (_activeButton != null)
                 _activeButton.Background = ActiveBrush;
         }
@@ -88,6 +87,7 @@ namespace WinTweaker
         {
             HomeButton.Background = Brushes.Transparent;
             TweaksButton.Background = Brushes.Transparent;
+            RestoreCenterButton.Background = Brushes.Transparent;
             UnlockerButton.Background = Brushes.Transparent;
             StartupButton.Background = Brushes.Transparent;
             ToolsButton.Background = Brushes.Transparent;
@@ -126,6 +126,12 @@ namespace WinTweaker
             RoutedEventArgs e)
         {
             ShowTweaks();
+        }
+
+        private void RestoreCenterButton_Click(object sender, RoutedEventArgs e)
+        {
+            SetActiveButton(RestoreCenterButton);
+            MainFrame.Navigate(new RestoreCenterPage());
         }
 
         private void ShowUnlocker()

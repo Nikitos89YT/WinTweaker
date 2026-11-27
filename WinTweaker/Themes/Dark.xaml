@@ -1,0 +1,10 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <SolidColorBrush x:Key="ThemeWindow" Color="#101116"/>
+    <SolidColorBrush x:Key="ThemeCard" Color="#191B22"/>
+    <SolidColorBrush x:Key="ThemeControl" Color="#282A34"/>
+    <SolidColorBrush x:Key="ThemeHover" Color="#363544"/>
+    <SolidColorBrush x:Key="ThemeBorder" Color="#484954"/>
+    <SolidColorBrush x:Key="ThemeText" Color="#F4F4F8"/>
+    <SolidColorBrush x:Key="ThemeMuted" Color="#A8ACBB"/>
+    <SolidColorBrush x:Key="ThemeSelected" Color="#48405A"/>
+</ResourceDictionary>

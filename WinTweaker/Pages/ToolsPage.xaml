@@ -1,7 +1,7 @@
-﻿<Page x:Class="WinTweaker.Pages.ToolsPage"
+<Page x:Class="WinTweaker.Pages.ToolsPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      Background="#0F1115">
+      Background="{DynamicResource ThemeWindow}">
 
     <ScrollViewer VerticalScrollBarVisibility="Auto"
                   HorizontalScrollBarVisibility="Disabled">
@@ -13,11 +13,11 @@
             <TextBlock Text="Инструменты"
                        FontSize="30"
                        FontWeight="Bold"
-                       Foreground="White"/>
+                       Foreground="{DynamicResource ThemeText}"/>
 
             <TextBlock Text="Диагностика и обслуживание Windows."
                        FontSize="14"
-                       Foreground="#7F8796"
+                       Foreground="{DynamicResource ThemeMuted}"
                        Margin="0,7,0,30"/>
 
 
@@ -25,7 +25,7 @@
             <!-- DISK CHECK -->
             <!-- ================================================= -->
 
-            <Border Background="#181C23"
+            <Border Background="{DynamicResource ThemeCard}"
                     CornerRadius="12"
                     Padding="22"
                     Margin="0,0,0,18">
@@ -35,11 +35,11 @@
                     <TextBlock Text="💾 Проверка диска"
                                FontSize="20"
                                FontWeight="SemiBold"
-                               Foreground="White"/>
+                               Foreground="{DynamicResource ThemeText}"/>
 
                     <TextBlock Text="Проверка файловой системы и исправление ошибок."
                                FontSize="13"
-                               Foreground="#8E96A5"
+                               Foreground="{DynamicResource ThemeMuted}"
                                Margin="0,7,0,20"/>
 
                     <StackPanel Orientation="Horizontal">
@@ -68,7 +68,7 @@
             <!-- SFC / DISM -->
             <!-- ================================================= -->
 
-            <Border Background="#181C23"
+            <Border Background="{DynamicResource ThemeCard}"
                     CornerRadius="12"
                     Padding="22"
                     Margin="0,0,0,18">
@@ -78,11 +78,11 @@
                     <TextBlock Text="🛡 Проверка Windows"
                                FontSize="20"
                                FontWeight="SemiBold"
-                               Foreground="White"/>
+                               Foreground="{DynamicResource ThemeText}"/>
 
                     <TextBlock Text="Проверка и восстановление системных компонентов Windows."
                                FontSize="13"
-                               Foreground="#8E96A5"
+                               Foreground="{DynamicResource ThemeMuted}"
                                Margin="0,7,0,20"/>
 
 
@@ -123,7 +123,7 @@
             <!-- FULL WINDOWS CHECK -->
             <!-- ================================================= -->
 
-            <Border Background="#181C23"
+            <Border Background="{DynamicResource ThemeCard}"
                     CornerRadius="12"
                     Padding="22"
                     Margin="0,0,0,18">
@@ -133,11 +133,11 @@
                     <TextBlock Text="🧩 Комплексная проверка Windows"
                                FontSize="20"
                                FontWeight="SemiBold"
-                               Foreground="White"/>
+                               Foreground="{DynamicResource ThemeText}"/>
 
                     <TextBlock Text="Последовательно выполняет DISM и SFC."
                                FontSize="13"
-                               Foreground="#8E96A5"
+                               Foreground="{DynamicResource ThemeMuted}"
                                Margin="0,7,0,20"/>
 
                     <Button x:Name="FullRepairButton"
@@ -153,43 +153,11 @@
 
 
             <!-- ================================================= -->
-            <!-- WINDOWS SERVICES -->
-            <!-- ================================================= -->
-
-            <Border Background="#181C23"
-                    CornerRadius="12"
-                    Padding="22"
-                    Margin="0,0,0,18">
-
-                <StackPanel>
-
-                    <TextBlock Text="⚙ Службы Windows"
-                               FontSize="20"
-                               FontWeight="SemiBold"
-                               Foreground="White"/>
-
-                    <TextBlock Text="Управление службами Windows."
-                               FontSize="13"
-                               Foreground="#8E96A5"
-                               Margin="0,7,0,20"/>
-
-                    <Button Content="Открыть службы Windows"
-                            Width="200"
-                            Height="40"
-                            HorizontalAlignment="Left"
-                            Click="OpenServicesButton_Click"/>
-
-                </StackPanel>
-
-            </Border>
-
-
-            <!-- ================================================= -->
             <!-- OUTPUT -->
             <!-- ================================================= -->
 
-            <Border Background="#18181D"
-                    BorderBrush="#303039"
+            <Border Background="{DynamicResource ThemeCard}"
+                    BorderBrush="{DynamicResource ThemeBorder}"
                     BorderThickness="1"
                     CornerRadius="12"
                     Padding="15"
@@ -200,15 +168,15 @@
                     <TextBlock Text="Вывод операции"
                                FontSize="16"
                                FontWeight="SemiBold"
-                               Foreground="White"/>
+                               Foreground="{DynamicResource ThemeText}"/>
 
                     <TextBox x:Name="OutputTextBox"
                              Text="Здесь будет отображаться результат выполнения операций."
                              Margin="0,12,0,0"
                              Height="220"
-                             Background="#101116"
-                             Foreground="#D8D8DE"
-                             BorderBrush="#303039"
+                             Background="{DynamicResource ThemeWindow}"
+                             Foreground="{DynamicResource ThemeText}"
+                             BorderBrush="{DynamicResource ThemeBorder}"
                              BorderThickness="1"
                              Padding="10"
                              FontFamily="Consolas"
@@ -218,6 +186,511 @@
                              IsReadOnly="True"
                              VerticalScrollBarVisibility="Auto"
                              HorizontalScrollBarVisibility="Auto"/>
+
+                </StackPanel>
+
+            </Border>
+
+
+            <!-- ================================================= -->
+            <!-- CLEANUP -->
+            <!-- ================================================= -->
+
+            <Border
+                Background="{DynamicResource ThemeCard}"
+                CornerRadius="14"
+                Padding="22"
+                Margin="0,0,0,18">
+
+                <StackPanel>
+
+                    <TextBlock
+                        Text="🧹 Очистка"
+                        FontSize="20"
+                        FontWeight="SemiBold"
+                        Foreground="{DynamicResource ThemeText}"/>
+
+                    <TextBlock
+                        Text="Очистка временных файлов и системных кэшей."
+                        FontSize="13"
+                        Foreground="{DynamicResource ThemeMuted}"
+                        Margin="0,7,0,18"/>
+
+
+                    <Grid>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="52"/>
+                            <RowDefinition Height="52"/>
+                            <RowDefinition Height="52"/>
+                            <RowDefinition Height="52"/>
+                            <RowDefinition Height="52"/>
+                            <RowDefinition Height="52"/>
+                            <RowDefinition Height="52"/>
+                        </Grid.RowDefinitions>
+
+
+                        <!-- USER TEMP -->
+
+                        <StackPanel
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            VerticalAlignment="Center">
+
+                            <TextBlock
+                                Text="Временные файлы пользователя"
+                                FontSize="14"
+                                Foreground="{DynamicResource ThemeText}"/>
+
+                            <TextBlock
+                                Text="%TEMP%"
+                                FontSize="11"
+                                Foreground="{DynamicResource ThemeMuted}"/>
+
+                        </StackPanel>
+
+                        <Button
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            Content="Очистить"
+                            Width="110"
+                            Height="36"
+                            Margin="15,0,0,0"
+                            Click="CleanUserTempButton_Click"/>
+
+
+                        <!-- WINDOWS TEMP -->
+
+                        <StackPanel
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            VerticalAlignment="Center">
+
+                            <TextBlock
+                                Text="Windows Temp"
+                                FontSize="14"
+                                Foreground="{DynamicResource ThemeText}"/>
+
+                            <TextBlock
+                                Text="C:\Windows\Temp"
+                                FontSize="11"
+                                Foreground="{DynamicResource ThemeMuted}"/>
+
+                        </StackPanel>
+
+                        <Button
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Content="Очистить"
+                            Width="110"
+                            Height="36"
+                            Margin="15,0,0,0"
+                            Click="CleanWindowsTempButton_Click"/>
+
+
+                        <!-- DIRECTX -->
+
+                        <StackPanel
+                            Grid.Row="2"
+                            Grid.Column="0"
+                            VerticalAlignment="Center">
+
+                            <TextBlock
+                                Text="DirectX Shader Cache"
+                                FontSize="14"
+                                Foreground="{DynamicResource ThemeText}"/>
+
+                            <TextBlock
+                                Text="Кэш шейдеров DirectX"
+                                FontSize="11"
+                                Foreground="{DynamicResource ThemeMuted}"/>
+
+                        </StackPanel>
+
+                        <Button
+                            Grid.Row="2"
+                            Grid.Column="1"
+                            Content="Очистить"
+                            Width="110"
+                            Height="36"
+                            Margin="15,0,0,0"
+                            Click="CleanDirectXShaderCacheButton_Click"/>
+
+
+                        <!-- THUMBNAILS -->
+
+                        <StackPanel
+                            Grid.Row="3"
+                            Grid.Column="0"
+                            VerticalAlignment="Center">
+
+                            <TextBlock
+                                Text="Кэш миниатюр"
+                                FontSize="14"
+                                Foreground="{DynamicResource ThemeText}"/>
+
+                            <TextBlock
+                                Text="Эскизы изображений и видео"
+                                FontSize="11"
+                                Foreground="{DynamicResource ThemeMuted}"/>
+
+                        </StackPanel>
+
+                        <Button
+                            Grid.Row="3"
+                            Grid.Column="1"
+                            Content="Очистить"
+                            Width="110"
+                            Height="36"
+                            Margin="15,0,0,0"
+                            Click="CleanThumbnailCacheButton_Click"/>
+
+
+                        <!-- ICONS -->
+
+                        <StackPanel
+                            Grid.Row="4"
+                            Grid.Column="0"
+                            VerticalAlignment="Center">
+
+                            <TextBlock
+                                Text="Кэш значков"
+                                FontSize="14"
+                                Foreground="{DynamicResource ThemeText}"/>
+
+                            <TextBlock
+                                Text="Кэш значков Windows"
+                                FontSize="11"
+                                Foreground="{DynamicResource ThemeMuted}"/>
+
+                        </StackPanel>
+
+                        <Button
+                            Grid.Row="4"
+                            Grid.Column="1"
+                            Content="Очистить"
+                            Width="110"
+                            Height="36"
+                            Margin="15,0,0,0"
+                            Click="CleanIconCacheButton_Click"/>
+
+
+                        <!-- DELIVERY -->
+
+                        <StackPanel
+                            Grid.Row="5"
+                            Grid.Column="0"
+                            VerticalAlignment="Center">
+
+                            <TextBlock
+                                Text="Delivery Optimization"
+                                FontSize="14"
+                                Foreground="{DynamicResource ThemeText}"/>
+
+                            <TextBlock
+                                Text="Кэш доставки обновлений Windows"
+                                FontSize="11"
+                                Foreground="{DynamicResource ThemeMuted}"/>
+
+                        </StackPanel>
+
+                        <Button
+                            Grid.Row="5"
+                            Grid.Column="1"
+                            Content="Очистить"
+                            Width="110"
+                            Height="36"
+                            Margin="15,0,0,0"
+                            Click="CleanDeliveryOptimizationButton_Click"/>
+
+
+                        <!-- RECYCLE -->
+
+                        <StackPanel
+                            Grid.Row="6"
+                            Grid.Column="0"
+                            VerticalAlignment="Center">
+
+                            <TextBlock
+                                Text="Корзина"
+                                FontSize="14"
+                                Foreground="{DynamicResource ThemeText}"/>
+
+                            <TextBlock
+                                Text="Безвозвратное удаление содержимого корзины"
+                                FontSize="11"
+                                Foreground="{DynamicResource ThemeMuted}"/>
+
+                        </StackPanel>
+
+                        <Button
+                            Grid.Row="6"
+                            Grid.Column="1"
+                            Content="Очистить"
+                            Width="110"
+                            Height="36"
+                            Margin="15,0,0,0"
+                            Click="EmptyRecycleBinButton_Click"/>
+
+                    </Grid>
+
+
+                    <!-- SAFE CLEANUP -->
+
+                    <Border
+                        Background="{DynamicResource ThemeWindow}"
+                        BorderBrush="{DynamicResource ThemeBorder}"
+                        BorderThickness="1"
+                        CornerRadius="10"
+                        Padding="18"
+                        Margin="0,22,0,0">
+
+                        <Grid>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+
+                            <StackPanel
+                                Grid.Column="0">
+
+                                <TextBlock
+                                    Text="🧹 Безопасная очистка"
+                                    FontSize="17"
+                                    FontWeight="SemiBold"
+                                    Foreground="{DynamicResource ThemeText}"/>
+
+                                <TextBlock
+                                    Text="Очищает временные файлы и системные кэши. Пользовательские документы не затрагиваются."
+                                    FontSize="12"
+                                    Foreground="{DynamicResource ThemeMuted}"
+                                    TextWrapping="Wrap"
+                                    Margin="0,5,15,0"/>
+
+                            </StackPanel>
+
+
+                            <StackPanel
+                                Grid.Column="1"
+                                VerticalAlignment="Center">
+
+                                <Button
+                                    x:Name="PreviewCleanupButton"
+                                    Content="Предпросмотр"
+                                    Width="140"
+                                    Height="36"
+                                    Margin="0,0,0,6"
+                                    Click="PreviewCleanupButton_Click"/>
+
+                                <Button
+                                    Content="Запустить"
+                                    Width="140"
+                                    Height="42"
+                                    Click="SafeCleanupButton_Click"/>
+
+                            </StackPanel>
+
+                        </Grid>
+
+                    </Border>
+
+                    <TextBox
+                        x:Name="CleanupPreviewTextBox"
+                        Text="Нажмите «Предпросмотр», чтобы оценить объём очистки без удаления файлов."
+                        Margin="0,12,0,0"
+                        Height="150"
+                        Background="{DynamicResource ThemeWindow}"
+                        Foreground="{DynamicResource ThemeText}"
+                        BorderBrush="{DynamicResource ThemeBorder}"
+                        BorderThickness="1"
+                        Padding="10"
+                        FontFamily="Consolas"
+                        FontSize="12"
+                        TextWrapping="Wrap"
+                        AcceptsReturn="True"
+                        IsReadOnly="True"
+                        VerticalScrollBarVisibility="Auto"/>
+
+                </StackPanel>
+
+            </Border>
+
+
+            <!-- ================================================= -->
+            <!-- SYSTEM -->
+            <!-- ================================================= -->
+
+            <Border
+                Background="{DynamicResource ThemeCard}"
+                CornerRadius="14"
+                Padding="22">
+
+                <StackPanel>
+
+                    <TextBlock
+                        Text="⚙️ Системные инструменты"
+                        FontSize="20"
+                        FontWeight="SemiBold"
+                        Foreground="{DynamicResource ThemeText}"/>
+
+                    <TextBlock
+                        Text="Быстрые системные действия и запуск встроенных компонентов Windows."
+                        FontSize="13"
+                        Foreground="{DynamicResource ThemeMuted}"
+                        Margin="0,7,0,18"/>
+
+
+                    <!-- ================================================= -->
+                    <!-- EXPLORER -->
+                    <!-- ================================================= -->
+
+                    <Border
+                        Background="{DynamicResource ThemeWindow}"
+                        CornerRadius="10"
+                        Padding="15"
+                        Margin="0,0,0,12">
+
+                        <Grid>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+
+                            <StackPanel
+                                Grid.Column="0">
+
+                                <TextBlock
+                                    Text="🔄 Windows Explorer"
+                                    FontSize="15"
+                                    FontWeight="SemiBold"
+                                    Foreground="{DynamicResource ThemeText}"/>
+
+                                <TextBlock
+                                    Text="Перезапускает оболочку Windows, рабочий стол и Проводник."
+                                    FontSize="12"
+                                    Foreground="{DynamicResource ThemeMuted}"
+                                    Margin="0,4,15,0"/>
+
+                            </StackPanel>
+
+
+                            <Button
+                                Grid.Column="1"
+                                Content="Перезапустить"
+                                Width="150"
+                                Height="40"
+                                VerticalAlignment="Center"
+                                Click="RestartExplorerButton_Click"/>
+
+                        </Grid>
+
+                    </Border>
+
+
+                    <!-- ================================================= -->
+                    <!-- QUICK LAUNCH -->
+                    <!-- ================================================= -->
+
+                    <TextBlock
+                        Text="🛠 Быстрый запуск"
+                        FontSize="15"
+                        FontWeight="SemiBold"
+                        Foreground="{DynamicResource ThemeText}"
+                        Margin="0,0,0,12"/>
+
+
+                    <TextBlock
+                        Text="Быстрый доступ к системным компонентам Windows."
+                        FontSize="12"
+                        Foreground="{DynamicResource ThemeMuted}"
+                        Margin="0,0,0,14"/>
+
+
+                    <WrapPanel>
+
+                        <Button
+                            Tag="TaskManager"
+                            Content="Диспетчер задач"
+                            Width="175"
+                            Height="42"
+                            Margin="0,0,10,10"
+                            Click="LaunchSystemComponentButton_Click"/>
+
+                        <Button
+                            Content="Драйверы и устройства"
+                            Width="185"
+                            Height="42"
+                            Margin="0,0,10,10"
+                            Click="OpenDriverManagerButton_Click"/>
+
+                        <Button Content="Приложения Windows" Width="185" Height="42"
+                                Margin="0,0,10,10" Click="OpenWindowsApps_Click"/>
+
+                        <Button
+                            Tag="DiskManagement"
+                            Content="Управление дисками"
+                            Width="180"
+                            Height="42"
+                            Margin="0,0,10,10"
+                            Click="LaunchSystemComponentButton_Click"/>
+
+                        <Button
+                            Content="Службы Windows"
+                            Width="150"
+                            Height="42"
+                            Margin="0,0,10,10"
+                            Click="OpenServicesButton_Click"/>
+
+                        <Button
+                            Tag="EventViewer"
+                            Content="Просмотр событий"
+                            Width="165"
+                            Height="42"
+                            Margin="0,0,10,10"
+                            Click="LaunchSystemComponentButton_Click"/>
+
+                        <Button
+                            Tag="ResourceMonitor"
+                            Content="Монитор ресурсов"
+                            Width="175"
+                            Height="42"
+                            Margin="0,0,10,10"
+                            Click="LaunchSystemComponentButton_Click"/>
+
+                        <Button
+                            Tag="SystemProperties"
+                            Content="Свойства системы"
+                            Width="165"
+                            Height="42"
+                            Margin="0,0,10,10"
+                            Click="LaunchSystemComponentButton_Click"/>
+
+                        <Button
+                            Tag="ControlPanel"
+                            Content="Панель управления"
+                            Width="175"
+                            Height="42"
+                            Margin="0,0,10,10"
+                            Click="LaunchSystemComponentButton_Click"/>
+
+                        <Button
+                            Tag="NetworkConnections"
+                            Content="Сетевые подключения"
+                            Width="185"
+                            Height="42"
+                            Margin="0,0,10,10"
+                            Click="LaunchSystemComponentButton_Click"/>
+
+                    </WrapPanel>
 
                 </StackPanel>
 

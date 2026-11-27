@@ -48,6 +48,21 @@ namespace WinTweaker.Services
         }
     }
 
+    public class CleanupPreviewResult
+    {
+        public string Name { get; set; } = "";
+
+        public int EstimatedFiles { get; set; }
+
+        public long EstimatedBytes { get; set; }
+
+        public int UnestimatedItems { get; set; }
+
+        public bool EstimateAvailable { get; set; } = true;
+
+        public string Message { get; set; } = "";
+    }
+
     public static class CleanupService
     {
         // =========================================================
@@ -354,6 +369,200 @@ namespace WinTweaker.Services
                     Name = "Корзина",
                     Success = false
                 };
+            }
+        }
+
+        // =========================================================
+        // CLEANUP PREVIEW
+        // =========================================================
+
+        public static List<CleanupPreviewResult> PreviewSafeCleanup()
+        {
+            return new List<CleanupPreviewResult>
+            {
+                PreviewUserTemp(),
+                PreviewWindowsTemp(),
+                PreviewDirectXShaderCache(),
+                PreviewThumbnailCache(),
+                PreviewIconCache(),
+                PreviewDeliveryOptimization(),
+                PreviewRecycleBin()
+            };
+        }
+
+        private static CleanupPreviewResult PreviewUserTemp()
+        {
+            return PreviewDirectory(
+                "Временные файлы пользователя",
+                Path.GetTempPath());
+        }
+
+        private static CleanupPreviewResult PreviewWindowsTemp()
+        {
+            string path = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.Windows),
+                "Temp");
+
+            return PreviewDirectory("Windows Temp", path);
+        }
+
+        private static CleanupPreviewResult PreviewDirectXShaderCache()
+        {
+            string path = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                "D3DSCache");
+
+            return PreviewDirectory("DirectX Shader Cache", path);
+        }
+
+        private static CleanupPreviewResult PreviewThumbnailCache()
+        {
+            string path = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                "Microsoft",
+                "Windows",
+                "Explorer");
+
+            return PreviewFiles(
+                "Кэш миниатюр",
+                path,
+                "thumbcache_*.db");
+        }
+
+        private static CleanupPreviewResult PreviewIconCache()
+        {
+            string path = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                "Microsoft",
+                "Windows",
+                "Explorer");
+
+            return PreviewFiles(
+                "Кэш значков",
+                path,
+                "iconcache*.db");
+        }
+
+        private static CleanupPreviewResult PreviewDeliveryOptimization()
+        {
+            return new CleanupPreviewResult
+            {
+                Name = "Delivery Optimization",
+                EstimateAvailable = false,
+                Message = "Размер нельзя оценить без запуска очистки."
+            };
+        }
+
+        private static CleanupPreviewResult PreviewRecycleBin()
+        {
+            try
+            {
+                SHQUERYRBINFO info = new SHQUERYRBINFO
+                {
+                    cbSize = (uint)Marshal.SizeOf<SHQUERYRBINFO>()
+                };
+
+                if (SHQueryRecycleBin(null, ref info) != 0)
+                {
+                    return new CleanupPreviewResult
+                    {
+                        Name = "Корзина",
+                        EstimateAvailable = false,
+                        Message = "Не удалось оценить содержимое корзины."
+                    };
+                }
+
+                return new CleanupPreviewResult
+                {
+                    Name = "Корзина",
+                    EstimatedFiles = info.i64NumItems > int.MaxValue
+                        ? int.MaxValue
+                        : (int)info.i64NumItems,
+                    EstimatedBytes = info.i64Size
+                };
+            }
+            catch
+            {
+                return new CleanupPreviewResult
+                {
+                    Name = "Корзина",
+                    EstimateAvailable = false,
+                    Message = "Не удалось оценить содержимое корзины."
+                };
+            }
+        }
+
+        private static CleanupPreviewResult PreviewDirectory(
+            string name,
+            string path)
+        {
+            var result = new CleanupPreviewResult { Name = name };
+
+            if (!Directory.Exists(path))
+                return result;
+
+            try
+            {
+                foreach (string file in Directory.EnumerateFiles(
+                             path,
+                             "*",
+                             SearchOption.AllDirectories))
+                {
+                    AddFileToPreview(file, result);
+                }
+            }
+            catch
+            {
+                result.EstimateAvailable = false;
+                result.Message = "Не удалось полностью оценить содержимое."
+                    + " Часть файлов может быть недоступна.";
+            }
+
+            return result;
+        }
+
+        private static CleanupPreviewResult PreviewFiles(
+            string name,
+            string path,
+            string pattern)
+        {
+            var result = new CleanupPreviewResult { Name = name };
+
+            if (!Directory.Exists(path))
+                return result;
+
+            try
+            {
+                foreach (string file in Directory.EnumerateFiles(
+                             path,
+                             pattern,
+                             SearchOption.TopDirectoryOnly))
+                {
+                    AddFileToPreview(file, result);
+                }
+            }
+            catch
+            {
+                result.EstimateAvailable = false;
+                result.Message = "Не удалось полностью оценить содержимое."
+                    + " Часть файлов может быть недоступна.";
+            }
+
+            return result;
+        }
+
+        private static void AddFileToPreview(
+            string file,
+            CleanupPreviewResult result)
+        {
+            try
+            {
+                result.EstimatedBytes += new FileInfo(file).Length;
+                result.EstimatedFiles++;
+            }
+            catch
+            {
+                result.UnestimatedItems++;
             }
         }
 

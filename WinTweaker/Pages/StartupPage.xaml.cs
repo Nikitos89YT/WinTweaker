@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -18,6 +18,10 @@ namespace WinTweaker.Pages
             InitializeComponent();
 
             Loaded += StartupPage_Loaded;
+            StartupDataGrid.ColumnReordered += (_, _) => SaveColumnLayout();
+            StartupDataGrid.AddHandler(System.Windows.Controls.Primitives.Thumb.DragCompletedEvent,
+                new System.Windows.Controls.Primitives.DragCompletedEventHandler((_, _) => SaveColumnLayout()), true);
+            Unloaded += (_, _) => SaveColumnLayout();
         }
 
         // =========================================================
@@ -28,6 +32,7 @@ namespace WinTweaker.Pages
             object sender,
             RoutedEventArgs e)
         {
+            RestoreColumnLayout();
             LoadStartupItems();
         }
 
@@ -35,8 +40,48 @@ namespace WinTweaker.Pages
         // LOAD STARTUP ITEMS
         // =========================================================
 
+        private static string ColumnLayoutPath => Path.Combine(
+            Path.GetDirectoryName(SettingsService.GetSettingsFilePath())!, "startup-columns.json");
+
+        private sealed record ColumnLayout(double[] Widths, int[] Order);
+
+        private void RestoreColumnLayout()
+        {
+            try
+            {
+                if (!File.Exists(ColumnLayoutPath)) return;
+                var layout = System.Text.Json.JsonSerializer.Deserialize<ColumnLayout>(File.ReadAllText(ColumnLayoutPath));
+                var columns = StartupDataGrid.Columns;
+                if (layout == null) return;
+                if (SettingsService.Current.SaveStartupColumns && layout.Widths?.Length == columns.Count &&
+                    layout.Widths.All(w => double.IsFinite(w) && w > 0))
+                    for (int i = 0; i < columns.Count; i++) columns[i].Width = layout.Widths[i];
+                if (SettingsService.Current.SaveStartupColumnOrder && layout.Order?.Length == columns.Count &&
+                    layout.Order.Order().SequenceEqual(Enumerable.Range(0, columns.Count)))
+                    foreach (int i in Enumerable.Range(0, columns.Count).OrderBy(i => layout.Order[i]))
+                        columns[i].DisplayIndex = layout.Order[i];
+            }
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or System.Text.Json.JsonException) { }
+        }
+
+        private void SaveColumnLayout()
+        {
+            var settings = SettingsService.Current;
+            if (!settings.SaveStartupColumns && !settings.SaveStartupColumnOrder) return;
+            var columns = StartupDataGrid.Columns;
+            var layout = new ColumnLayout(
+                settings.SaveStartupColumns ? columns.Select(c => c.ActualWidth).ToArray() : [],
+                settings.SaveStartupColumnOrder ? columns.Select(c => c.DisplayIndex).ToArray() : []);
+            try
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(ColumnLayoutPath)!);
+                File.WriteAllText(ColumnLayoutPath, System.Text.Json.JsonSerializer.Serialize(layout));
+            }
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException) { }
+        }
+
         private void LoadStartupItems(
-            string? selectedName = null)
+            string? selectedName = null, string? location = null, int logonIndex = 0)
         {
             // Обычный автозапуск:
             // HKCU/HKLM Run, RunOnce, Startup Folder,
@@ -47,7 +92,7 @@ namespace WinTweaker.Pages
             // Системный автозапуск:
             // Winlogon + задачи Планировщика.
             var systemItems =
-                StartupSystemService.GetAllSystemStartup();
+                SettingsService.Current.ShowSystemStartupItems ? StartupSystemService.GetAllSystemStartup() : [];
 
             foreach (StartupSystemItem systemItem
                      in systemItems)
@@ -69,7 +114,7 @@ namespace WinTweaker.Pages
             {
                 var itemToSelect =
                     items.FirstOrDefault(
-                        x => x.Name.Equals(
+                        x => (location == null || (x.Location == location && x.LogonIndex == logonIndex)) && x.Name.Equals(
                             selectedName,
                             StringComparison.OrdinalIgnoreCase));
 
@@ -117,8 +162,8 @@ namespace WinTweaker.Pages
 
                 // Системные записи нельзя включать/выключать
                 // через обычный механизм StartupApproved.
-                IsEnabled =
-                    true,
+                IsEnabled = systemItem.Enabled,
+                LogonIndex = systemItem.LogonIndex,
 
                 ItemType =
                     systemItem.IsCritical
@@ -152,8 +197,7 @@ namespace WinTweaker.Pages
                 OriginalPath =
                     systemItem.Value,
 
-                CanToggle =
-                    false
+                CanToggle = systemItem.CanEdit
             };
         }
 
@@ -222,6 +266,7 @@ namespace WinTweaker.Pages
 
             if (_selectedItem.CanToggle)
             {
+                ToggleStartupButton.ToolTip = _selectedItem.LogonIndex > 0 ? "Переключить выбранный триггер входа" : null;
                 ToggleStartupButton.Content =
                     _selectedItem.IsEnabled
                         ? "Отключить"
@@ -248,7 +293,7 @@ namespace WinTweaker.Pages
             // Системные записи здесь специально защищены.
             if (!_selectedItem.CanToggle)
             {
-                MessageBox.Show(
+                AppDialogs.Show(
                     "Эта запись является системной " +
                     "и не может быть отключена из WinTweaker.",
                     "Автозагрузка",
@@ -270,7 +315,7 @@ namespace WinTweaker.Pages
                     : "включить";
 
             MessageBoxResult confirmation =
-                MessageBox.Show(
+                AppDialogs.Show(
                     $"Ты действительно хочешь {action} запись:\n\n" +
                     itemName,
                     "Автозагрузка",
@@ -280,6 +325,20 @@ namespace WinTweaker.Pages
             if (confirmation !=
                 MessageBoxResult.Yes)
             {
+                return;
+            }
+
+            if (_selectedItem.LogonIndex > 0)
+            {
+                try
+                {
+                    StartupSystemService.SetLogonEnabled(_selectedItem.Location, _selectedItem.LogonIndex, !currentlyEnabled);
+                }
+                catch (Exception ex)
+                {
+                    AppDialogs.Show($"Не удалось изменить запуск при входе. {ex.Message}", "Автозагрузка");
+                }
+                LoadStartupItems(itemName, _selectedItem.Location, _selectedItem.LogonIndex);
                 return;
             }
 
@@ -300,7 +359,7 @@ namespace WinTweaker.Pages
 
             if (!success)
             {
-                MessageBox.Show(
+                AppDialogs.Show(
                     $"Не удалось {action} запись:\n\n" +
                     itemName,
                     "Автозагрузка",
@@ -357,7 +416,7 @@ namespace WinTweaker.Pages
             }
             catch
             {
-                MessageBox.Show(
+                AppDialogs.Show(
                     "Не удалось открыть папку автозагрузки.",
                     "Автозагрузка",
                     MessageBoxButton.OK,
@@ -389,7 +448,7 @@ namespace WinTweaker.Pages
             }
             catch
             {
-                MessageBox.Show(
+                AppDialogs.Show(
                     "Не удалось скопировать команду.",
                     "Автозагрузка",
                     MessageBoxButton.OK,
@@ -424,7 +483,7 @@ namespace WinTweaker.Pages
 
                     if (!opened)
                     {
-                        MessageBox.Show(
+                        AppDialogs.Show(
                             "Не удалось открыть редактор реестра.",
                             "Автозагрузка",
                             MessageBoxButton.OK,
@@ -444,7 +503,7 @@ namespace WinTweaker.Pages
                 if (string.IsNullOrWhiteSpace(
                         location))
                 {
-                    MessageBox.Show(
+                    AppDialogs.Show(
                         "Расположение неизвестно.",
                         "Автозагрузка",
                         MessageBoxButton.OK,
@@ -491,7 +550,7 @@ namespace WinTweaker.Pages
                 // Для некоторых типов записей Location —
                 // это не физический путь, а, например,
                 // раздел реестра или путь задачи.
-                MessageBox.Show(
+                AppDialogs.Show(
                     "Не удалось открыть расположение:\n\n" +
                     location,
                     "Автозагрузка",
@@ -500,7 +559,7 @@ namespace WinTweaker.Pages
             }
             catch
             {
-                MessageBox.Show(
+                AppDialogs.Show(
                     "Не удалось открыть расположение.",
                     "Автозагрузка",
                     MessageBoxButton.OK,

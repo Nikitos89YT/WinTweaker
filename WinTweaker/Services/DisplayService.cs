@@ -16,6 +16,7 @@ namespace WinTweaker.Services
 
     public class OriginalDisplayMode
     {
+        public required string DeviceName { get; init; }
         public int Width { get; set; }
         public int Height { get; set; }
         public int RefreshRate { get; set; }
@@ -269,6 +270,7 @@ namespace WinTweaker.Services
 
             _originalMode = new OriginalDisplayMode
             {
+                DeviceName = deviceName,
                 Width = mode.dmPelsWidth,
                 Height = mode.dmPelsHeight,
                 RefreshRate = mode.dmDisplayFrequency,
@@ -291,11 +293,11 @@ namespace WinTweaker.Services
             if (string.IsNullOrWhiteSpace(deviceName))
                 return false;
 
-            if (_originalMode == null)
-            {
-                if (!SaveOriginalMode())
-                    return false;
-            }
+            if (_originalMode != null && _originalMode.DeviceName != deviceName)
+                return false;
+
+            if (_originalMode == null && !SaveOriginalMode())
+                return false;
 
             DEVMODE mode = CreateDevMode();
 
@@ -354,7 +356,7 @@ namespace WinTweaker.Services
 
             string? deviceName = GetPrimaryMonitorDeviceName();
 
-            if (string.IsNullOrWhiteSpace(deviceName))
+            if (deviceName != _originalMode.DeviceName)
                 return false;
 
             DEVMODE mode = CreateDevMode();

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.Management;
 using System.Linq;
@@ -210,14 +210,14 @@ namespace WinTweaker.Services
         // LIVE MONITORING
         // =========================
 
-        public static double GetCpuUsage()
+        public static double? GetCpuUsage()
         {
             try
             {
                 EnsureCpuCounter();
 
                 if (_cpuCounter == null)
-                    return 0;
+                    return null;
 
                 double value = _cpuCounter.NextValue();
 
@@ -225,12 +225,15 @@ namespace WinTweaker.Services
             }
             catch
             {
-                return 0;
+                return null;
             }
         }
 
-        public static double GetRamUsage()
+        public static double? GetRamUsage() => GetRamUsage(out _);
+
+        internal static double? GetRamUsage(out double? totalGb)
         {
+            totalGb = null;
             try
             {
                 using ManagementObjectSearcher searcher =
@@ -252,8 +255,9 @@ namespace WinTweaker.Services
                         Convert.ToDouble(obj["FreePhysicalMemory"]);
 
                     if (totalKb <= 0)
-                        return 0;
+                        return null;
 
+                    totalGb = totalKb / (1024 * 1024);
                     double used = totalKb - freeKb;
                     double percent = used / totalKb * 100;
 
@@ -262,66 +266,47 @@ namespace WinTweaker.Services
             }
             catch
             {
-                return 0;
+                return null;
             }
 
-            return 0;
+            return null;
         }
 
-        public static double GetGpuUsage()
+        private static readonly Dictionary<string, PerformanceCounter> GpuCounters = new();
+
+        public static double? GetGpuUsage()
         {
             try
             {
-                PerformanceCounterCategory category =
-                    new PerformanceCounterCategory("GPU Engine");
-
-                string[] instances = category.GetInstanceNames();
-
-                var gpuInstances = instances
-                    .Where(instance =>
-                        instance.Contains(
-                            "engtype_3D",
-                            StringComparison.OrdinalIgnoreCase))
-                    .ToArray();
-
-                if (gpuInstances.Length == 0)
-                    return 0;
-
-                double maxUsage = 0;
-
-                foreach (string instance in gpuInstances)
+                var names = new PerformanceCounterCategory("GPU Engine").GetInstanceNames()
+                    .Where(name => name.Contains("engtype_3D", StringComparison.OrdinalIgnoreCase)).ToHashSet();
+                foreach (var name in GpuCounters.Keys.Where(name => !names.Contains(name)).ToArray())
+                {
+                    GpuCounters[name].Dispose();
+                    GpuCounters.Remove(name);
+                }
+                double? max = null;
+                foreach (var name in names)
                 {
                     try
                     {
-                        using PerformanceCounter counter =
-                            new PerformanceCounter(
-                                "GPU Engine",
-                                "Utilization Percentage",
-                                instance,
-                                true);
-
-                        // Первый замер прогревает счётчик.
-                        counter.NextValue();
-
-                        // Небольшая задержка здесь специально не нужна:
-                        // наш общий таймер делает новый замер раз в секунду.
-                        double value = counter.NextValue();
-
-                        if (value > maxUsage)
-                            maxUsage = value;
+                        if (GpuCounters.TryGetValue(name, out var counter))
+                            max = Math.Max(max ?? 0, counter.NextValue());
+                        else
+                        {
+                            var fresh = new PerformanceCounter("GPU Engine", "Utilization Percentage", name, true);
+                            try { fresh.NextValue(); GpuCounters.Add(name, fresh); }
+                            catch { fresh.Dispose(); throw; }
+                        }
                     }
                     catch
                     {
-                        // Один недоступный GPU engine не ломает весь мониторинг.
+                        if (GpuCounters.Remove(name, out var failed)) failed.Dispose();
                     }
                 }
-
-                return Math.Clamp(maxUsage, 0, 100);
+                return max is double value && double.IsFinite(value) ? Math.Clamp(value, 0, 100) : null;
             }
-            catch
-            {
-                return 0;
-            }
+            catch { return null; }
         }
     }
 }
